@@ -50,6 +50,11 @@ android {
     }
 }
 
+dependencies {
+    implementation(platform("io.github.rosemoe:editor-bom:0.24.4"))
+    implementation("io.github.rosemoe:editor")
+}
+
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
