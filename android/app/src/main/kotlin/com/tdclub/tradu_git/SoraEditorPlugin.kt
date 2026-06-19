@@ -38,8 +38,128 @@ class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
         when (call.method) {
             "setText" -> {
                 val text = call.argument<String>("text") ?: ""
+                val scrollX = call.argument<Int>("scrollX") ?: 0
+                val scrollY = call.argument<Int>("scrollY") ?: 0
+                val cursorLine = call.argument<Int>("cursorLine") ?: 0
+                val cursorColumn = call.argument<Int>("cursorColumn") ?: 0
+
+                println("[SoraEditorPlugin] setText text.length=${text.length} scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn")
                 current?.setText(text)
+                val applyState = Runnable {
+                    val h = current?.height ?: 0
+                    val w = current?.width ?: 0
+                    println("[SoraEditorPlugin] applyState: size=${w}x${h} setting selection to ($cursorLine, $cursorColumn), scrolling to ($scrollX, $scrollY)")
+                    if (h > 0) {
+                        try {
+                            current?.setSelection(cursorLine, cursorColumn, false)
+                            current?.getScroller()?.startScroll(scrollX, scrollY, 0, 0, 0)
+                            current?.getScroller()?.computeScrollOffset()
+                            current?.getScroller()?.setEditorOffsets()
+                            current?.invalidate()
+                        } catch (e: Exception) {
+                            println("[SoraEditorPlugin] applyState error: ${e.message}")
+                        }
+                    } else {
+                        current?.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+                            override fun onLayoutChange(
+                                v: View?, left: Int, top: Int, right: Int, bottom: Int,
+                                oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
+                            ) {
+                                val newHeight = bottom - top
+                                val newWidth = right - left
+                                println("[SoraEditorPlugin] onLayoutChange: size=${newWidth}x${newHeight}")
+                                if (newHeight > 0) {
+                                    current?.removeOnLayoutChangeListener(this)
+                                    try {
+                                        current?.setSelection(cursorLine, cursorColumn, false)
+                                        current?.getScroller()?.startScroll(scrollX, scrollY, 0, 0, 0)
+                                        current?.getScroller()?.computeScrollOffset()
+                                        current?.getScroller()?.setEditorOffsets()
+                                        current?.invalidate()
+                                    } catch (e: Exception) {
+                                        println("[SoraEditorPlugin] onLayoutChange apply error: ${e.message}")
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+
+                current?.post(applyState)
+                current?.postDelayed(applyState, 100)
                 result.success(null)
+            }
+            "getEditorState" -> {
+                if (current != null) {
+                    val cursor = current.cursor
+                    val scrollX = current.offsetX
+                    val scrollY = current.offsetY
+                    val cursorLine = cursor.leftLine
+                    val cursorColumn = cursor.leftColumn
+                    println("[SoraEditorPlugin] getEditorState: scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn")
+                    val stateMap = mapOf(
+                        "scrollX" to scrollX,
+                        "scrollY" to scrollY,
+                        "cursorLine" to cursorLine,
+                        "cursorColumn" to cursorColumn
+                    )
+                    result.success(stateMap)
+                } else {
+                    println("[SoraEditorPlugin] getEditorState: current editor is null")
+                    result.success(null)
+                }
+            }
+            "search" -> {
+                val query = call.argument<String>("query")
+                if (query != null) {
+                    try {
+                        val searcher = current?.getSearcher()
+                        if (searcher != null) {
+                            if (query.isEmpty()) {
+                                searcher.stopSearch()
+                            } else {
+                                val options = io.github.rosemoe.sora.widget.EditorSearcher.SearchOptions(
+                                    io.github.rosemoe.sora.widget.EditorSearcher.SearchOptions.TYPE_NORMAL,
+                                    true // caseInsensitive
+                                )
+                                searcher.search(query, options)
+                            }
+                            result.success(true)
+                        } else {
+                            result.success(false)
+                        }
+                    } catch (e: Exception) {
+                        result.error("SEARCH_FAILED", e.message, null)
+                    }
+                } else {
+                    result.error("INVALID_ARGUMENT", "Query is null", null)
+                }
+            }
+            "findNext" -> {
+                try {
+                    val searcher = current?.getSearcher()
+                    if (searcher != null) {
+                        searcher.gotoNext()
+                        result.success(true)
+                    } else {
+                        result.success(false)
+                    }
+                } catch (e: Exception) {
+                    result.error("FIND_NEXT_FAILED", e.message, null)
+                }
+            }
+            "findPrevious" -> {
+                try {
+                    val searcher = current?.getSearcher()
+                    if (searcher != null) {
+                        searcher.gotoPrevious()
+                        result.success(true)
+                    } else {
+                        result.success(false)
+                    }
+                } catch (e: Exception) {
+                    result.error("FIND_PREV_FAILED", e.message, null)
+                }
             }
             "getText" -> {
                 result.success(current?.text?.toString() ?: "")
@@ -94,8 +214,8 @@ private class SoraEditorView(
     onEditorReady: (CodeEditor) -> Unit,
 ) : PlatformView {
     private val editor = CodeEditor(context).apply {
-        setTextSize(12f)
-        isWordwrap = true
+        setTextSize(18f)
+        isWordwrap = false
         isLineNumberEnabled = true
         isEditable = true
         colorScheme = SchemeDarcula()

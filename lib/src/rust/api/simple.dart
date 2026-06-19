@@ -8,3 +8,185 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 String greet({required String name}) =>
     RustLib.instance.api.crateApiSimpleGreet(name: name);
+
+Future<String> setupSslCertificates({required String filesDir}) =>
+    RustLib.instance.api.crateApiSimpleSetupSslCertificates(filesDir: filesDir);
+
+bool hasGitRepo({required String path}) =>
+    RustLib.instance.api.crateApiSimpleHasGitRepo(path: path);
+
+Future<String> gitClone({required String url, required String path}) =>
+    RustLib.instance.api.crateApiSimpleGitClone(url: url, path: path);
+
+Future<String> gitStatus({required String path}) =>
+    RustLib.instance.api.crateApiSimpleGitStatus(path: path);
+
+Future<String> gitAdd({required String path, required String filePath}) =>
+    RustLib.instance.api.crateApiSimpleGitAdd(path: path, filePath: filePath);
+
+Future<String> gitReset({required String path, required String filePath}) =>
+    RustLib.instance.api.crateApiSimpleGitReset(path: path, filePath: filePath);
+
+Future<String> gitCommit({
+  required String path,
+  required String message,
+  required String authorName,
+  required String authorEmail,
+}) => RustLib.instance.api.crateApiSimpleGitCommit(
+  path: path,
+  message: message,
+  authorName: authorName,
+  authorEmail: authorEmail,
+);
+
+Future<String> gitPush({
+  required String path,
+  required String remoteName,
+  required String branchName,
+  String? username,
+  String? password,
+}) => RustLib.instance.api.crateApiSimpleGitPush(
+  path: path,
+  remoteName: remoteName,
+  branchName: branchName,
+  username: username,
+  password: password,
+);
+
+Future<String> gitPull({
+  required String path,
+  required String remoteName,
+  required String branchName,
+  String? username,
+  String? password,
+  String? authorName,
+  String? authorEmail,
+}) => RustLib.instance.api.crateApiSimpleGitPull(
+  path: path,
+  remoteName: remoteName,
+  branchName: branchName,
+  username: username,
+  password: password,
+  authorName: authorName,
+  authorEmail: authorEmail,
+);
+
+Future<String> runCommand({
+  required String path,
+  required String commandLine,
+}) => RustLib.instance.api.crateApiSimpleRunCommand(
+  path: path,
+  commandLine: commandLine,
+);
+
+Future<List<GitCommitInfo>> gitLog({
+  required String path,
+  required BigInt maxCount,
+}) => RustLib.instance.api.crateApiSimpleGitLog(path: path, maxCount: maxCount);
+
+Future<String> gitDiscardChanges({
+  required String path,
+  required String filePath,
+}) => RustLib.instance.api.crateApiSimpleGitDiscardChanges(
+  path: path,
+  filePath: filePath,
+);
+
+Future<String> gitFetch({
+  required String path,
+  required String remoteName,
+  required String branchName,
+  String? username,
+  String? password,
+}) => RustLib.instance.api.crateApiSimpleGitFetch(
+  path: path,
+  remoteName: remoteName,
+  branchName: branchName,
+  username: username,
+  password: password,
+);
+
+Future<GitCompareInfo> gitCompareBranches({
+  required String path,
+  required String localBranch,
+  required String remoteName,
+}) => RustLib.instance.api.crateApiSimpleGitCompareBranches(
+  path: path,
+  localBranch: localBranch,
+  remoteName: remoteName,
+);
+
+Future<String> gitCurrentBranch({required String path}) =>
+    RustLib.instance.api.crateApiSimpleGitCurrentBranch(path: path);
+
+Future<List<String>> gitListBranches({required String path}) =>
+    RustLib.instance.api.crateApiSimpleGitListBranches(path: path);
+
+Future<String> gitCreateBranch({
+  required String path,
+  required String branchName,
+}) => RustLib.instance.api.crateApiSimpleGitCreateBranch(
+  path: path,
+  branchName: branchName,
+);
+
+Future<String> gitCheckoutBranch({
+  required String path,
+  required String branchName,
+}) => RustLib.instance.api.crateApiSimpleGitCheckoutBranch(
+  path: path,
+  branchName: branchName,
+);
+
+class GitCommitInfo {
+  final String hash;
+  final String author;
+  final String email;
+  final PlatformInt64 time;
+  final String message;
+
+  const GitCommitInfo({
+    required this.hash,
+    required this.author,
+    required this.email,
+    required this.time,
+    required this.message,
+  });
+
+  @override
+  int get hashCode =>
+      hash.hashCode ^
+      author.hashCode ^
+      email.hashCode ^
+      time.hashCode ^
+      message.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GitCommitInfo &&
+          runtimeType == other.runtimeType &&
+          hash == other.hash &&
+          author == other.author &&
+          email == other.email &&
+          time == other.time &&
+          message == other.message;
+}
+
+class GitCompareInfo {
+  final BigInt ahead;
+  final BigInt behind;
+
+  const GitCompareInfo({required this.ahead, required this.behind});
+
+  @override
+  int get hashCode => ahead.hashCode ^ behind.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GitCompareInfo &&
+          runtimeType == other.runtimeType &&
+          ahead == other.ahead &&
+          behind == other.behind;
+}

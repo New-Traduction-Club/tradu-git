@@ -1,12 +1,67 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tradu_git/ui/app_theme.dart';
 import 'package:tradu_git/ui/screens/dashboard_screen.dart';
 import 'package:tradu_git/ui/screens/onboarding_screen.dart';
-import 'package:tradu_git/ui/screens/saf_setup_screen.dart';
+import 'package:tradu_git/src/workspace_provider.dart';
+import 'package:tradu_git/src/rust/api/simple.dart';
 
-class TraduGitApp extends StatelessWidget {
+class TraduGitApp extends ConsumerStatefulWidget {
   const TraduGitApp({super.key});
+
+  @override
+  ConsumerState<TraduGitApp> createState() => _TraduGitAppState();
+}
+
+class _TraduGitAppState extends ConsumerState<TraduGitApp> {
+  static const _storageChannel = MethodChannel('com.tdclub.tradu_git/storage');
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInternalPath();
+  }
+
+  Future<void> _loadInternalPath() async {
+    try {
+      final String path = await _storageChannel.invokeMethod('getInternalStoragePath');
+      
+      // Dynamic SSL CA bundling setup for git2 (OpenSSL) on Android
+      await setupSslCertificates(filesDir: path);
+
+      final reposDir = Directory('$path/repos');
+      if (!reposDir.existsSync()) {
+        reposDir.createSync(recursive: true);
+      }
+      ref.read(internalReposPathProvider.notifier).setPath(reposDir.path);
+
+      // Scan for existing drafts at startup to populate dirtyFilesProvider
+      final draftsDir = Directory('$path/drafts');
+      if (draftsDir.existsSync()) {
+        try {
+          final files = draftsDir.listSync();
+          for (var file in files) {
+            if (file is File && file.path.endsWith('.draft')) {
+              final name = file.path.split('/').last.replaceAll('.draft', '');
+              try {
+                final decodedPath = Uri.decodeComponent(name);
+                ref.read(dirtyFilesProvider.notifier).setDirty(decodedPath, true);
+              } catch (e) {
+                debugPrint('Error decoding draft filename: $e');
+              }
+            }
+          }
+        } catch (e) {
+          debugPrint('Error scanning drafts: $e');
+        }
+      }
+    } catch (e) {
+      debugPrint('Error getting internal storage path: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +72,6 @@ class TraduGitApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       routes: {
         '/': (_) => const OnboardingScreen(),
-        '/saf': (_) => const SafSetupScreen(),
         '/dashboard': (_) => const DashboardScreen(),
       },
     );
