@@ -420,4 +420,87 @@ Future<List<GithubRepositoryInfo>> fetchGithubRepositories(String token) async {
 /// Provider to track active search state in the editor view.
 final isSearchingProvider = StateProvider.autoDispose<bool>((ref) => false);
 
+class AppSettings {
+  final bool wordWrap;
+  final String theme;
+
+  const AppSettings({
+    this.wordWrap = false,
+    this.theme = 'darcula',
+  });
+
+  factory AppSettings.fromJson(Map<String, dynamic> json) {
+    return AppSettings(
+      wordWrap: json['wordWrap'] as bool? ?? false,
+      theme: json['theme'] as String? ?? 'darcula',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'wordWrap': wordWrap,
+    'theme': theme,
+  };
+
+  AppSettings copyWith({
+    bool? wordWrap,
+    String? theme,
+  }) {
+    return AppSettings(
+      wordWrap: wordWrap ?? this.wordWrap,
+      theme: theme ?? this.theme,
+    );
+  }
+}
+
+class AppSettingsNotifier extends StateNotifier<AppSettings> {
+  final Ref _ref;
+
+  AppSettingsNotifier(this._ref) : super(const AppSettings(wordWrap: false, theme: 'darcula')) {
+    _ref.listen<String?>(internalReposPathProvider, (prev, next) {
+      _loadSettings();
+    });
+    _loadSettings();
+  }
+
+  void _loadSettings() {
+    final reposPath = _ref.read(internalReposPathProvider);
+    if (reposPath == null) return;
+    final file = File('$reposPath/../settings.json');
+    if (file.existsSync()) {
+      try {
+        final content = file.readAsStringSync();
+        final json = jsonDecode(content) as Map<String, dynamic>;
+        state = AppSettings.fromJson(json);
+      } catch (e) {
+        debugPrint('Error loading settings: $e');
+      }
+    }
+  }
+
+  Future<void> updateWordWrap(bool enabled) async {
+    state = state.copyWith(wordWrap: enabled);
+    await _saveSettings();
+  }
+
+  Future<void> updateTheme(String themeName) async {
+    state = state.copyWith(theme: themeName);
+    await _saveSettings();
+  }
+
+  Future<void> _saveSettings() async {
+    final reposPath = _ref.read(internalReposPathProvider);
+    if (reposPath == null) return;
+    final file = File('$reposPath/../settings.json');
+    try {
+      await file.writeAsString(jsonEncode(state.toJson()));
+    } catch (e) {
+      debugPrint('Error saving settings: $e');
+    }
+  }
+}
+
+final appSettingsProvider = StateNotifierProvider<AppSettingsNotifier, AppSettings>((ref) {
+  return AppSettingsNotifier(ref);
+});
+
 

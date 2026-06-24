@@ -24,6 +24,8 @@ class _WorkspaceScreenState extends ConsumerState<WorkspaceScreen> {
   Widget build(BuildContext context) {
     final activeRepoPath = ref.watch(activeRepoPathProvider);
     final repoName = activeRepoPath?.split('/').last ?? 'Workspace';
+    final activeFile = ref.watch(activeFilePathProvider);
+    final showToolbar = _navIndex == 0 && activeFile != null;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -139,7 +141,7 @@ class _WorkspaceScreenState extends ConsumerState<WorkspaceScreen> {
         children: [
           Padding(
             padding: EdgeInsets.only(
-              bottom: (_navIndex == 0 ? _toolbarHeight : 0.0) + MediaQuery.of(context).padding.bottom,
+              bottom: (showToolbar ? _toolbarHeight : 0.0) + MediaQuery.of(context).padding.bottom,
             ),
             child: Column(
               children: [
@@ -156,7 +158,7 @@ class _WorkspaceScreenState extends ConsumerState<WorkspaceScreen> {
               ],
             ),
           ),
-          if (_navIndex == 0)
+          if (showToolbar)
             Align(
               alignment: Alignment.bottomCenter,
               child: _BottomToolbar(height: _toolbarHeight),
@@ -485,11 +487,18 @@ class _TabChip extends StatelessWidget {
   }
 }
 
-class _EditorView extends StatelessWidget {
+class _EditorView extends ConsumerWidget {
   const _EditorView();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeFile = ref.watch(activeFilePathProvider);
+    if (activeFile == null) {
+      return Container(
+        color: AppTheme.surface,
+      );
+    }
+
     return Container(
       color: AppTheme.surface,
       padding: const EdgeInsets.all(6),
@@ -1934,7 +1943,9 @@ class _BottomToolbar extends ConsumerWidget {
                     ),
                     _ToolbarButton(
                       icon: Icons.tune,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, '/settings');
+                      },
                     ),
                   ],
                 ),

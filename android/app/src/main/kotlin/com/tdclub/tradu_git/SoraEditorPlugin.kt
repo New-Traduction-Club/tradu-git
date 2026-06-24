@@ -1,6 +1,7 @@
 package com.tdclub.tradu_git
 
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
@@ -13,6 +14,7 @@ import io.flutter.plugin.platform.PlatformViewFactory
 import io.flutter.plugin.common.StandardMessageCodec
 import io.github.rosemoe.sora.widget.CodeEditor
 import io.github.rosemoe.sora.widget.schemes.SchemeDarcula
+import io.github.rosemoe.sora.widget.schemes.EditorColorScheme
 
 class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
     private var channel: MethodChannel? = null
@@ -188,6 +190,12 @@ class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
                 val themeName = call.argument<String>("themeName") ?: "darcula"
                 val scheme = when (themeName) {
                     "darcula" -> SchemeDarcula()
+                    "amoled" -> {
+                        val amoledScheme = SchemeDarcula()
+                        amoledScheme.setColor(EditorColorScheme.WHOLE_BACKGROUND, Color.BLACK)
+                        amoledScheme.setColor(EditorColorScheme.LINE_NUMBER_BACKGROUND, Color.BLACK)
+                        amoledScheme
+                    }
                     else -> SchemeDarcula()
                 }
                 current?.colorScheme = scheme

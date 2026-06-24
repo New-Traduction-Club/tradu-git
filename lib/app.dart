@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tradu_git/ui/app_theme.dart';
 import 'package:tradu_git/ui/screens/dashboard_screen.dart';
 import 'package:tradu_git/ui/screens/onboarding_screen.dart';
+import 'package:tradu_git/ui/screens/settings_screen.dart';
 import 'package:tradu_git/src/workspace_provider.dart';
 import 'package:tradu_git/src/rust/api/simple.dart';
 
@@ -73,6 +74,7 @@ class _TraduGitAppState extends ConsumerState<TraduGitApp> {
       routes: {
         '/': (_) => const OnboardingScreen(),
         '/dashboard': (_) => const DashboardScreen(),
+        '/settings': (_) => const SettingsScreen(),
       },
     );
   }

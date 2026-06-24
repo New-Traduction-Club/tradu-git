@@ -138,6 +138,10 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
         final cursorColumn = stateInfo?.cursorColumn ?? 0;
 
         debugPrint('[Dart] _loadActiveFile retrieved state from provider: scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn');
+        final wordWrap = ref.read(appSettingsProvider).wordWrap;
+        final themeName = ref.read(appSettingsProvider).theme;
+        await _channel.invokeMethod('setWrap', {'wrap': wordWrap});
+        await _channel.invokeMethod('setTheme', {'themeName': themeName});
         await _channel.invokeMethod('setText', {
           'text': content,
           'scrollX': scrollX,
@@ -152,7 +156,7 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
       }
     } else {
       await _channel.invokeMethod('setText', {
-        'text': 'Ahorita voy a quitar esto'
+        'text': ''
       });
       _loadedFilePath = null;
     }
@@ -198,6 +202,18 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
           _loadActiveFile();
         });
       }
+    });
+
+    // Listen to word wrap setting changes to apply them live
+    ref.listen<bool>(appSettingsProvider.select((s) => s.wordWrap), (previous, next) {
+      debugPrint('[Dart] Live word wrap setting changed to: $next');
+      _channel.invokeMethod('setWrap', {'wrap': next});
+    });
+
+    // Listen to theme setting changes to apply them live
+    ref.listen<String>(appSettingsProvider.select((s) => s.theme), (previous, next) {
+      debugPrint('[Dart] Live theme setting changed to: $next');
+      _channel.invokeMethod('setTheme', {'themeName': next});
     });
 
     return Focus(
