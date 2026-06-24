@@ -14,10 +14,15 @@ class SoraEditorView extends ConsumerStatefulWidget {
 class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBindingObserver {
   static const _channel = MethodChannel('sora_editor');
   String? _loadedFilePath;
+  late final FocusNode _focusNode;
+  bool _isFocusingFromNative = false;
 
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(_onFlutterFocusChanged);
+    _channel.setMethodCallHandler(_handleMethodCall);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadActiveFile();
@@ -26,6 +31,9 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
 
   @override
   void dispose() {
+    _focusNode.removeListener(_onFlutterFocusChanged);
+    _focusNode.dispose();
+    _channel.setMethodCallHandler(null);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -150,6 +158,36 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
     }
   }
 
+  void _onFlutterFocusChanged() {
+    debugPrint('[Dart] Flutter focus changed: hasFocus=${_focusNode.hasFocus}');
+    if (_isFocusingFromNative) return;
+    if (_focusNode.hasFocus) {
+      _channel.invokeMethod('requestFocus');
+    } else {
+      _channel.invokeMethod('clearFocus');
+    }
+  }
+
+  Future<void> _handleMethodCall(MethodCall call) async {
+    debugPrint('[Dart] Received method call: ${call.method}');
+    switch (call.method) {
+      case 'onFocusGained':
+        if (!_focusNode.hasFocus) {
+          _isFocusingFromNative = true;
+          _focusNode.requestFocus();
+          _isFocusingFromNative = false;
+        }
+        break;
+      case 'onFocusLost':
+        if (_focusNode.hasFocus) {
+          _isFocusingFromNative = true;
+          _focusNode.unfocus();
+          _isFocusingFromNative = false;
+        }
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Listen to changes to activeFilePathProvider to reload file dynamically
@@ -162,9 +200,23 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
       }
     });
 
-    return const AndroidView(
-      viewType: 'sora_editor_view',
-      layoutDirection: TextDirection.ltr,
+    return Focus(
+      focusNode: _focusNode,
+      onKeyEvent: (node, event) {
+        final key = event.logicalKey;
+        if (key == LogicalKeyboardKey.arrowUp ||
+            key == LogicalKeyboardKey.arrowDown ||
+            key == LogicalKeyboardKey.arrowLeft ||
+            key == LogicalKeyboardKey.arrowRight ||
+            key == LogicalKeyboardKey.tab) {
+          return KeyEventResult.skipRemainingHandlers;
+        }
+        return KeyEventResult.ignored;
+      },
+      child: const AndroidView(
+        viewType: 'sora_editor_view',
+        layoutDirection: TextDirection.ltr,
+      ),
     );
   }
 }

@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    implementation(platform("io.github.rosemoe:editor-bom:0.24.4"))
+    implementation(platform("io.github.rosemoe:editor-bom:0.24.6"))
     implementation("io.github.rosemoe:editor")
 }
 

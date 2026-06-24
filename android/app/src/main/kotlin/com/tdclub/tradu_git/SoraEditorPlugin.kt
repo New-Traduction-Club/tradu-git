@@ -193,6 +193,14 @@ class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
                 current?.colorScheme = scheme
                 result.success(null)
             }
+            "requestFocus" -> {
+                current?.requestFocus()
+                result.success(null)
+            }
+            "clearFocus" -> {
+                current?.clearFocus()
+                result.success(null)
+            }
             else -> result.notImplemented()
         }
     }
@@ -220,9 +228,17 @@ private class SoraEditorView(
         isEditable = true
         colorScheme = SchemeDarcula()
     }
+    private val channel = MethodChannel(messenger, "sora_editor")
 
     init {
         onEditorReady(editor)
+        editor.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                channel.invokeMethod("onFocusGained", null)
+            } else {
+                channel.invokeMethod("onFocusLost", null)
+            }
+        }
     }
 
     override fun getView(): View = editor
