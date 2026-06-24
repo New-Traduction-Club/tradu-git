@@ -423,31 +423,37 @@ final isSearchingProvider = StateProvider.autoDispose<bool>((ref) => false);
 class AppSettings {
   final bool wordWrap;
   final String theme;
+  final bool simpleMode;
 
   const AppSettings({
     this.wordWrap = false,
     this.theme = 'darcula',
+    this.simpleMode = false,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
     return AppSettings(
       wordWrap: json['wordWrap'] as bool? ?? false,
       theme: json['theme'] as String? ?? 'darcula',
+      simpleMode: json['simpleMode'] as bool? ?? false,
     );
   }
 
   Map<String, dynamic> toJson() => {
     'wordWrap': wordWrap,
     'theme': theme,
+    'simpleMode': simpleMode,
   };
 
   AppSettings copyWith({
     bool? wordWrap,
     String? theme,
+    bool? simpleMode,
   }) {
     return AppSettings(
       wordWrap: wordWrap ?? this.wordWrap,
       theme: theme ?? this.theme,
+      simpleMode: simpleMode ?? this.simpleMode,
     );
   }
 }
@@ -455,7 +461,8 @@ class AppSettings {
 class AppSettingsNotifier extends StateNotifier<AppSettings> {
   final Ref _ref;
 
-  AppSettingsNotifier(this._ref) : super(const AppSettings(wordWrap: false, theme: 'darcula')) {
+  AppSettingsNotifier(this._ref)
+      : super(const AppSettings(wordWrap: false, theme: 'darcula', simpleMode: false)) {
     _ref.listen<String?>(internalReposPathProvider, (prev, next) {
       _loadSettings();
     });
@@ -484,6 +491,11 @@ class AppSettingsNotifier extends StateNotifier<AppSettings> {
 
   Future<void> updateTheme(String themeName) async {
     state = state.copyWith(theme: themeName);
+    await _saveSettings();
+  }
+
+  Future<void> updateSimpleMode(bool enabled) async {
+    state = state.copyWith(simpleMode: enabled);
     await _saveSettings();
   }
 

@@ -21,6 +21,79 @@ class _WorkspaceScreenState extends ConsumerState<WorkspaceScreen> {
   static const double _toolbarHeight = 44;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _autoSyncOnOpen();
+    });
+  }
+
+  Future<void> _autoSyncOnOpen() async {
+    final simpleMode = ref.read(appSettingsProvider).simpleMode;
+    if (!simpleMode) return;
+
+    final repoPath = ref.read(activeRepoPathProvider);
+    if (repoPath == null) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Sincronizando repositorio...'),
+        duration: Duration(milliseconds: 1000),
+      ),
+    );
+
+    try {
+      final branch = await gitCurrentBranch(path: repoPath);
+      final token = ref.read(githubTokenProvider);
+      final passwordOpt = (token != null && token.isNotEmpty) ? token : null;
+      final usernameOpt = passwordOpt != null ? 'oauth2' : null;
+
+      final user = ref.read(githubUserProvider);
+      final authorName = user?.username;
+      final authorEmail = user?.email;
+
+      await gitFetch(
+        path: repoPath,
+        remoteName: 'origin',
+        branchName: branch,
+        username: usernameOpt,
+        password: passwordOpt,
+      );
+
+      await gitPull(
+        path: repoPath,
+        remoteName: 'origin',
+        branchName: branch,
+        username: usernameOpt,
+        password: passwordOpt,
+        authorName: authorName,
+        authorEmail: authorEmail,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Repositorio sincronizado.'),
+            duration: Duration(milliseconds: 1000),
+          ),
+        );
+        ref.read(gitStatusProvider.notifier).refresh();
+        ref.invalidate(gitCompareProvider);
+        ref.invalidate(gitHistoryProvider);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al sincronizar: $e'),
+            duration: const Duration(milliseconds: 2000),
+          ),
+        );
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final activeRepoPath = ref.watch(activeRepoPathProvider);
     final repoName = activeRepoPath?.split('/').last ?? 'Workspace';
@@ -1898,7 +1971,10 @@ class _BottomToolbar extends ConsumerWidget {
                         final activeFile = ref.read(activeFilePathProvider);
                         if (activeFile == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('No hay ningún archivo abierto.')),
+                            const SnackBar(
+                              content: Text('No hay ningún archivo abierto.'),
+                              duration: Duration(milliseconds: 1000),
+                            ),
                           );
                           return;
                         }
@@ -1926,11 +2002,29 @@ class _BottomToolbar extends ConsumerWidget {
                           ref.read(gitStatusProvider.notifier).refresh();
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Guardado: ${activeFile.split('/').last}')),
+                            SnackBar(
+                              content: Text('Guardado: ${activeFile.split('/').last}'),
+                              duration: const Duration(milliseconds: 1000),
+                            ),
                           );
+
+                          final repoPath = ref.read(activeRepoPathProvider);
+                          if (ref.read(appSettingsProvider).simpleMode && repoPath != null) {
+                            String relativePath = activeFile;
+                            if (activeFile.startsWith(repoPath)) {
+                              relativePath = activeFile.substring(repoPath.length);
+                              if (relativePath.startsWith('/')) {
+                                relativePath = relativePath.substring(1);
+                              }
+                            }
+                            _runSimpleModeAutoSync(context, ref, repoPath, relativePath);
+                          }
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error al guardar: $e')),
+                            SnackBar(
+                              content: Text('Error al guardar: $e'),
+                              duration: const Duration(milliseconds: 2000),
+                            ),
                           );
                         }
                       },
@@ -1952,6 +2046,73 @@ class _BottomToolbar extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _runSimpleModeAutoSync(
+      BuildContext context, WidgetRef ref, String repoPath, String relativePath) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Sincronizando cambios en GitHub...'),
+        duration: Duration(milliseconds: 1000),
+      ),
+    );
+
+    try {
+      await gitAdd(path: repoPath, filePath: relativePath);
+
+      final branch = await gitCurrentBranch(path: repoPath);
+      final user = ref.read(githubUserProvider);
+      final authorName = user?.username ?? 'Tradu-Git';
+      final authorEmail = user?.email ?? 'user@tradu-git.internal';
+
+      final now = DateTime.now();
+      final year = now.year.toString();
+      final month = now.month.toString().padLeft(2, '0');
+      final day = now.day.toString().padLeft(2, '0');
+      final hour = now.hour.toString().padLeft(2, '0');
+      final minute = now.minute.toString().padLeft(2, '0');
+      final commitMsg = 'Last sync: $year/$month/$day - $hour:$minute (Tradu-Git)';
+
+      await gitCommit(
+        path: repoPath,
+        message: commitMsg,
+        authorName: authorName,
+        authorEmail: authorEmail,
+      );
+
+      final token = ref.read(githubTokenProvider);
+      final passwordOpt = (token != null && token.isNotEmpty) ? token : null;
+      final usernameOpt = passwordOpt != null ? 'oauth2' : null;
+
+      await gitPush(
+        path: repoPath,
+        remoteName: 'origin',
+        branchName: branch,
+        username: usernameOpt,
+        password: passwordOpt,
+      );
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Cambios guardados y subidos a GitHub.'),
+            duration: Duration(milliseconds: 1000),
+          ),
+        );
+        ref.read(gitStatusProvider.notifier).refresh();
+        ref.invalidate(gitCompareProvider);
+        ref.invalidate(gitHistoryProvider);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al subir cambios: $e'),
+            duration: const Duration(milliseconds: 2000),
+          ),
+        );
+      }
+    }
   }
 }
 

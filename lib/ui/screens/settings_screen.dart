@@ -70,6 +70,36 @@ class SettingsScreen extends ConsumerWidget {
             ),
             onTap: () => _showThemeSelectorDialog(context, ref),
           ),
+          SwitchListTile(
+            value: settings.simpleMode,
+            activeColor: AppTheme.accent,
+            activeTrackColor: AppTheme.accentSoft,
+            inactiveThumbColor: AppTheme.muted,
+            inactiveTrackColor: AppTheme.surface,
+            tileColor: AppTheme.surface,
+            title: const Text(
+              'Modo Simple',
+              style: TextStyle(
+                color: AppTheme.ink,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            subtitle: const Text(
+              'Sincronización automática de Git al abrir y guardar archivos.',
+              style: TextStyle(
+                color: AppTheme.muted,
+                fontSize: 12,
+              ),
+            ),
+            onChanged: (bool value) {
+              if (value) {
+                _showSimpleModeCautionDialog(context, ref);
+              } else {
+                ref.read(appSettingsProvider.notifier).updateSimpleMode(false);
+              }
+            },
+          ),
           const Divider(),
         ],
       ),
@@ -149,6 +179,68 @@ class SettingsScreen extends ConsumerWidget {
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  void _showSimpleModeCautionDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppTheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: const BorderSide(color: AppTheme.border, width: 1),
+          ),
+          title: const Text(
+            'Activar Modo Simple',
+            style: TextStyle(
+              color: AppTheme.ink,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'El Modo Simple automatiza las operaciones de Git para facilitar la sincronización:',
+                  style: TextStyle(color: AppTheme.ink, fontSize: 14),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  '• Al abrir un repositorio, se realizarán automáticamente las operaciones de búsqueda y obtención de cambios.\n'
+                  '• Al guardar cualquier archivo se creará un commit automático y se enviarán los cambios.',
+                  style: TextStyle(color: AppTheme.ink, fontSize: 13),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '• Si hay cambios conflictivos en el repositorio remoto, las operaciones automáticas podrían fallar y requerir interacción humana..',
+                  style: TextStyle(color: AppTheme.muted, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppTheme.accent,
+                foregroundColor: Colors.black,
+              ),
+              onPressed: () {
+                ref.read(appSettingsProvider.notifier).updateSimpleMode(true);
+                Navigator.pop(context);
+              },
+              child: const Text('Activar'),
+            ),
+          ],
         );
       },
     );
