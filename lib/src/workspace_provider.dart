@@ -553,7 +553,7 @@ final appSettingsProvider =
 
 final explorerScrollOffsetProvider = StateProvider<double>((ref) => 0.0);
 
-String _toRelative(String absolutePath, String repoPath) {
+String toRelative(String absolutePath, String repoPath) {
   if (absolutePath.startsWith(repoPath)) {
     var rel = absolutePath.substring(repoPath.length);
     if (rel.startsWith('/')) {
@@ -564,7 +564,7 @@ String _toRelative(String absolutePath, String repoPath) {
   return absolutePath;
 }
 
-String _toAbsolute(String relativePath, String repoPath) {
+String toAbsolute(String relativePath, String repoPath) {
   if (relativePath.startsWith('/')) {
     return relativePath;
   }
@@ -637,15 +637,15 @@ class RepoSessionManager {
       final explorerScrollOffset = _ref.read(explorerScrollOffsetProvider);
 
       final sessionData = {
-        'openFiles': openFiles.map((p) => _toRelative(p, repoPath)).toList(),
+        'openFiles': openFiles.map((p) => toRelative(p, repoPath)).toList(),
         'activeFilePath': activeFile != null
-            ? _toRelative(activeFile, repoPath)
+            ? toRelative(activeFile, repoPath)
             : null,
         'expandedDirs': expandedDirs
-            .map((p) => _toRelative(p, repoPath))
+            .map((p) => toRelative(p, repoPath))
             .toList(),
         'editorStates': editorStates.map(
-          (k, v) => MapEntry(_toRelative(k, repoPath), v.toJson()),
+          (k, v) => MapEntry(toRelative(k, repoPath), v.toJson()),
         ),
         'explorerScrollOffset': explorerScrollOffset,
       };
@@ -680,17 +680,17 @@ class RepoSessionManager {
           json['explorerScrollOffset'] as double? ?? 0.0;
 
       final openFiles = rawOpenFiles
-          .map((p) => _toAbsolute(p as String, repoPath))
+          .map((p) => toAbsolute(p as String, repoPath))
           .toList();
       final activeFile = rawActiveFile != null
-          ? _toAbsolute(rawActiveFile, repoPath)
+          ? toAbsolute(rawActiveFile, repoPath)
           : null;
       final expandedDirs = rawExpandedDirs
-          .map((p) => _toAbsolute(p as String, repoPath))
+          .map((p) => toAbsolute(p as String, repoPath))
           .toSet();
       final editorStates = rawEditorStates.map(
         (k, v) => MapEntry(
-          _toAbsolute(k, repoPath),
+          toAbsolute(k, repoPath),
           EditorStateInfo.fromJson(v as Map<String, dynamic>),
         ),
       );
