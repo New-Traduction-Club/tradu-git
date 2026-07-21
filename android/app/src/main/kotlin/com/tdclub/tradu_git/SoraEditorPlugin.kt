@@ -47,48 +47,36 @@ class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
 
                 println("[SoraEditorPlugin] setText text.length=${text.length} scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn")
                 current?.setText(text)
-                val applyState = Runnable {
-                    val h = current?.height ?: 0
-                    val w = current?.width ?: 0
-                    println("[SoraEditorPlugin] applyState: size=${w}x${h} setting selection to ($cursorLine, $cursorColumn), scrolling to ($scrollX, $scrollY)")
-                    if (h > 0) {
-                        try {
-                            current?.setSelection(cursorLine, cursorColumn, false)
-                            current?.getScroller()?.startScroll(scrollX, scrollY, 0, 0, 0)
-                            current?.getScroller()?.computeScrollOffset()
-                            current?.getScroller()?.setEditorOffsets()
-                            current?.invalidate()
-                        } catch (e: Exception) {
-                            println("[SoraEditorPlugin] applyState error: ${e.message}")
-                        }
-                    } else {
-                        current?.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-                            override fun onLayoutChange(
-                                v: View?, left: Int, top: Int, right: Int, bottom: Int,
-                                oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
-                            ) {
-                                val newHeight = bottom - top
-                                val newWidth = right - left
-                                println("[SoraEditorPlugin] onLayoutChange: size=${newWidth}x${newHeight}")
-                                if (newHeight > 0) {
-                                    current?.removeOnLayoutChangeListener(this)
-                                    try {
-                                        current?.setSelection(cursorLine, cursorColumn, false)
-                                        current?.getScroller()?.startScroll(scrollX, scrollY, 0, 0, 0)
-                                        current?.getScroller()?.computeScrollOffset()
-                                        current?.getScroller()?.setEditorOffsets()
-                                        current?.invalidate()
-                                    } catch (e: Exception) {
-                                        println("[SoraEditorPlugin] onLayoutChange apply error: ${e.message}")
-                                    }
-                                }
-                            }
-                        })
+
+                val applyState = {
+                    try {
+                        current?.setSelection(cursorLine, cursorColumn, false)
+                        current?.getScroller()?.startScroll(scrollX, scrollY, 0, 0, 0)
+                        current?.getScroller()?.computeScrollOffset()
+                        current?.getScroller()?.setEditorOffsets()
+                        current?.invalidate()
+                    } catch (e: Exception) {
+                        println("[SoraEditorPlugin] applyState error: ${e.message}")
                     }
                 }
 
-                current?.post(applyState)
-                current?.postDelayed(applyState, 100)
+                val h = current?.height ?: 0
+                if (h > 0) {
+                    applyState()
+                } else {
+                    current?.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+                        override fun onLayoutChange(
+                            v: View?, left: Int, top: Int, right: Int, bottom: Int,
+                            oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
+                        ) {
+                            val newHeight = bottom - top
+                            if (newHeight > 0) {
+                                current?.removeOnLayoutChangeListener(this)
+                                applyState()
+                            }
+                        }
+                    })
+                }
                 result.success(null)
             }
             "getEditorState" -> {
