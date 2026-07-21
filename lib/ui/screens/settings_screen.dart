@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tradu_git/l10n/app_localizations.dart';
 import 'package:tradu_git/ui/app_theme.dart';
 import 'package:tradu_git/src/workspace_provider.dart';
 
@@ -8,13 +9,14 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final settings = ref.watch(appSettingsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Configuración',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          l10n.settings,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: ListView(
@@ -28,9 +30,9 @@ class SettingsScreen extends ConsumerWidget {
             inactiveThumbColor: AppTheme.muted,
             inactiveTrackColor: AppTheme.surface,
             tileColor: AppTheme.surface,
-            title: const Text(
-              'Ajuste de línea',
-              style: TextStyle(
+            title: Text(
+              l10n.wordWrap,
+              style: const TextStyle(
                 color: AppTheme.ink,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
@@ -49,9 +51,9 @@ class SettingsScreen extends ConsumerWidget {
           ),
           ListTile(
             tileColor: AppTheme.surface,
-            title: const Text(
-              'Tema del Editor',
-              style: TextStyle(
+            title: Text(
+              l10n.editorTheme,
+              style: const TextStyle(
                 color: AppTheme.ink,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
@@ -77,9 +79,9 @@ class SettingsScreen extends ConsumerWidget {
             inactiveThumbColor: AppTheme.muted,
             inactiveTrackColor: AppTheme.surface,
             tileColor: AppTheme.surface,
-            title: const Text(
-              'Modo Simple',
-              style: TextStyle(
+            title: Text(
+              l10n.simpleMode,
+              style: const TextStyle(
                 color: AppTheme.ink,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,

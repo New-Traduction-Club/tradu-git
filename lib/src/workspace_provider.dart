@@ -177,7 +177,7 @@ class GitStatusNotifier extends StateNotifier<AsyncValue<String>> {
   Future<void> refresh() async {
     final repoPath = _ref.read(activeRepoPathProvider);
     if (repoPath == null) {
-      state = const AsyncValue.data('Sin repositorio seleccionado.');
+      state = const AsyncValue.data('NO_REPO');
       return;
     }
     state = const AsyncValue.loading();

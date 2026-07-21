@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tradu_git/l10n/app_localizations.dart';
 import 'package:tradu_git/ui/app_theme.dart';
 import 'package:tradu_git/ui/screens/workspace_screen.dart';
 import 'package:tradu_git/src/workspace_provider.dart';
@@ -83,11 +84,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final workspacePath = ref.watch(internalReposPathProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Repositorios'),
+        title: Text(l10n.repositories),
         leading: IconButton(
           icon: const Icon(Icons.settings),
           onPressed: () {
@@ -123,7 +125,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               backgroundColor: AppTheme.accent,
               foregroundColor: Colors.black,
               icon: const Icon(Icons.add),
-              label: const Text('Clonar'),
+              label: Text(l10n.clone),
             )
           : null,
     );

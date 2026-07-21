@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tradu_git/l10n/app_localizations.dart';
 import 'package:tradu_git/ui/app_theme.dart';
 import 'package:tradu_git/ui/widgets/sora_editor_view.dart';
 import 'package:tradu_git/src/workspace_provider.dart';
@@ -1249,11 +1250,12 @@ class _GitPanelState extends ConsumerState<_GitPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final statusAsync = ref.watch(gitStatusProvider);
     final repoPath = ref.watch(activeRepoPathProvider);
 
     if (repoPath == null) {
-      return const Center(child: Text('No hay ningún repositorio seleccionado.'));
+      return Center(child: Text(l10n.noSelectedRepo));
     }
 
     return statusAsync.when(

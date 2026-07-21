@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tradu_git/l10n/app_localizations.dart';
 import 'package:tradu_git/ui/app_theme.dart';
 import 'package:tradu_git/ui/screens/dashboard_screen.dart';
 import 'package:tradu_git/ui/screens/onboarding_screen.dart';
@@ -71,6 +73,17 @@ class _TraduGitAppState extends ConsumerState<TraduGitApp> {
       theme: _buildDarkTheme(),
       darkTheme: _buildDarkTheme(),
       themeMode: ThemeMode.dark,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('es'),
+        Locale('en'),
+      ],
+      locale: const Locale('es'),
       routes: {
         '/': (_) => const OnboardingScreen(),
         '/dashboard': (_) => const DashboardScreen(),

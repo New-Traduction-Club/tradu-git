@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tradu_git/l10n/app_localizations.dart';
 import 'package:tradu_git/ui/app_theme.dart';
 import 'package:tradu_git/src/github_config.dart';
 import 'package:tradu_git/src/workspace_provider.dart';
@@ -73,16 +74,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           Navigator.pushReplacementNamed(context, '/dashboard');
         }
       } else {
-        setState(() {
-          _isLoggingIn = false;
-          _loginError = 'Error al intercambiar el código por token.';
-        });
+        if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
+          setState(() {
+            _isLoggingIn = false;
+            _loginError = l10n.codeExchangeError;
+          });
+        }
       }
     } catch (e) {
-      setState(() {
-        _isLoggingIn = false;
-        _loginError = 'Error durante la autenticación: $e';
-      });
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() {
+          _isLoggingIn = false;
+          _loginError = l10n.authError(e.toString());
+        });
+      }
     }
   }
 
@@ -129,14 +136,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     try {
       await _browserChannel.invokeMethod('launchBrowser', {'url': authUrl});
     } catch (e) {
-      setState(() {
-        _loginError = 'Error al abrir el navegador: $e';
-      });
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() {
+          _loginError = l10n.browserLaunchError(e.toString());
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final token = ref.watch(githubTokenProvider);
 
     if (token != null && token.isNotEmpty) {
@@ -160,14 +171,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               _TopBadge(),
               const Spacer(),
               Text(
-                'Tradu-Git',
+                l10n.appTitle,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
               ),
               const SizedBox(height: 10),
               Text(
-                'Versión beta.',
+                l10n.betaVersion,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppTheme.muted,
                       height: 1.35,
@@ -175,12 +186,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
               const SizedBox(height: 40),
               if (_isLoggingIn)
-                const Center(
+                Center(
                   child: Column(
                     children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 12),
-                      Text('Iniciando sesión en GitHub...'),
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 12),
+                      Text(l10n.loggingInGitHub),
                     ],
                   ),
                 )
@@ -190,7 +201,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   child: FilledButton.icon(
                     onPressed: _startOAuthFlow,
                     icon: const Icon(Icons.login),
-                    label: const Text('Iniciar Sesión con GitHub'),
+                    label: Text(l10n.loginWithGitHub),
                   ),
                 ),
                 if (_loginError != null) ...[

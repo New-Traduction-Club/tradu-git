@@ -1,0 +1,79 @@
+{
+  "@@locale": "es",
+  "appTitle": "Tradu-Git",
+  "betaVersion": "Versión beta.",
+  "loggingInGitHub": "Iniciando sesión en GitHub...",
+  "loginWithGitHub": "Iniciar Sesión con GitHub",
+  "continueWithoutAccount": "Continuar sin cuenta",
+  "codeExchangeError": "Error al intercambiar el código por token.",
+  "authError": "Error durante la autenticación: {error}",
+  "@authError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "browserLaunchError": "Error al abrir el navegador: {error}",
+  "@browserLaunchError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "repositories": "Repositorios",
+  "searchRepositories": "Buscar repositorios...",
+  "cloneRepository": "Clonar repositorio",
+  "cloneGitUrl": "Clonar desde URL de Git",
+  "enterRepositoryUrl": "Ingrese la URL del repositorio Git",
+  "clone": "Clonar",
+  "cloningRepository": "Clonando repositorio...",
+  "noRepositoriesFound": "No se encontraron repositorios.",
+  "connectGitHubToSeeRepos": "Inicia sesión con GitHub para ver tus repositorios.",
+  "openWorkspace": "Abrir espacio de trabajo",
+  "settings": "Configuración",
+  "fileExplorer": "Explorador de archivos",
+  "unsavedDrafts": "Archivos sin guardar",
+  "gitChanges": "Cambios en Git",
+  "branches": "Ramas",
+  "createBranch": "Crear rama",
+  "switchBranch": "Cambiar de rama",
+  "commitHistory": "Historial de commits",
+  "commitMessage": "Mensaje del commit",
+  "commit": "Hacer commit",
+  "commitAndPush": "Hacer commit y push",
+  "push": "Subir cambios (Push)",
+  "pull": "Obtener cambios (Pull)",
+  "saveFile": "Guardar archivo",
+  "discardChanges": "Descartar cambios",
+  "noSelectedRepo": "Sin repositorio seleccionado.",
+  "fetchingGitStatus": "Buscando cambios en git...",
+  "commitPushSuccess": "Commit y Push exitoso",
+  "commitError": "Error al hacer commit: {error}",
+  "@commitError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noPendingChanges": "Sin cambios pendientes",
+  "wordWrap": "Ajuste de línea (Word Wrap)",
+  "editorTheme": "Tema del editor",
+  "simpleMode": "Modo simple",
+  "githubToken": "Token de GitHub",
+  "connectedAs": "Conectado como {username}",
+  "@connectedAs": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "logout": "Cerrar sesión",
+  "cancel": "Cancelar",
+  "save": "Guardar",
+  "ok": "Aceptar",
+  "error": "Error"
+}
