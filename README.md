@@ -1,17 +1,8 @@
-# tradu_git
+# Tradu-Git
 
-A new Flutter project.
+A WIP mobile Git client, borned on the idea to help users to contribute GitHub repositories from mobile devices.
 
-## Getting Started
+## It uses:
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- For Git: `libgit2` & `git2-rs`
+- For Code Editor: [Sora Editor](https://github.com/Rosemoe/sora-editor)
