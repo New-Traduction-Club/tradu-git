@@ -68,6 +68,7 @@ class _TraduGitAppState extends ConsumerState<TraduGitApp> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(repoSessionManagerProvider);
     return MaterialApp(
       title: 'Tradu-Git',
       theme: _buildDarkTheme(),

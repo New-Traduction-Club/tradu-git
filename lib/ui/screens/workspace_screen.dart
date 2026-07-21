@@ -29,6 +29,15 @@ class _WorkspaceScreenState extends ConsumerState<WorkspaceScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    final activeRepoNotifier = ref.read(activeRepoPathProvider.notifier);
+    Future.microtask(() {
+      activeRepoNotifier.setPath(null);
+    });
+    super.dispose();
+  }
+
   Future<void> _autoSyncOnOpen() async {
     final simpleMode = ref.read(appSettingsProvider).simpleMode;
     if (!simpleMode) return;
@@ -101,143 +110,166 @@ class _WorkspaceScreenState extends ConsumerState<WorkspaceScreen> {
     final activeFile = ref.watch(activeFilePathProvider);
     final showToolbar = _navIndex == 0 && activeFile != null;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(repoName),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        actions: [
-          Builder(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final navigator = Navigator.of(context);
+        final activeFile = ref.read(activeFilePathProvider);
+        if (activeFile != null) {
+          try {
+            final Map<dynamic, dynamic>? stateMap = await const MethodChannel('sora_editor').invokeMethod('getEditorState');
+            if (stateMap != null) {
+              final scrollX = stateMap['scrollX'] as int? ?? 0;
+              final scrollY = stateMap['scrollY'] as int? ?? 0;
+              final cursorLine = stateMap['cursorLine'] as int? ?? 0;
+              final cursorColumn = stateMap['cursorColumn'] as int? ?? 0;
+
+              ref.read(fileEditorStatesProvider.notifier).saveState(
+                activeFile,
+                EditorStateInfo(
+                  scrollX: scrollX,
+                  scrollY: scrollY,
+                  cursorLine: cursorLine,
+                  cursorColumn: cursorColumn,
+                ),
+              );
+            }
+          } catch (e) {
+            debugPrint('Error saving state on pop: $e');
+          }
+        }
+        navigator.pop();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text(repoName),
+          leading: Builder(
             builder: (context) => IconButton(
-              icon: const Icon(Icons.view_list),
-              onPressed: () => Scaffold.of(context).openEndDrawer(),
+              icon: const Icon(Icons.menu),
+              onPressed: () => Scaffold.of(context).openDrawer(),
             ),
           ),
-        ],
-      ),
-      drawer: Drawer(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 12, 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Explorador',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.note_add, size: 20),
-                      tooltip: 'Crear Archivo',
-                      onPressed: () {
-                        if (activeRepoPath != null) {
-                          _showCreateEntityDialog(context, ref, activeRepoPath, true);
-                        }
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.create_new_folder, size: 20),
-                      tooltip: 'Crear Carpeta',
-                      onPressed: () {
-                        if (activeRepoPath != null) {
-                          _showCreateEntityDialog(context, ref, activeRepoPath, false);
-                        }
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.folder_open, size: 20),
-                      tooltip: 'Abrir Carpeta',
-                      onPressed: () => _openDocumentsProvider(context),
-                    ),
-                  ],
-                ),
+          actions: [
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.view_list),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
               ),
-              const Divider(height: 1),
-              Expanded(
-                child: activeRepoPath == null
-                    ? const Center(child: Text('Repositorio no seleccionado'))
-                    : Consumer(
-                        builder: (context, ref, child) {
-                          ref.watch(fileExplorerRefreshProvider);
-                          final dir = Directory(activeRepoPath);
-                          if (!dir.existsSync()) {
-                            return const Center(child: Text('Directorio no encontrado.'));
+            ),
+          ],
+        ),
+        drawer: Drawer(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 12, 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Explorador',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.note_add, size: 20),
+                        tooltip: 'Crear Archivo',
+                        onPressed: () {
+                          if (activeRepoPath != null) {
+                            _showCreateEntityDialog(context, ref, activeRepoPath, true);
                           }
-                          List<FileSystemEntity> rootEntities = [];
-                          try {
-                            rootEntities = dir.listSync();
-                            rootEntities.sort((a, b) {
-                              if (a is Directory && b is! Directory) return -1;
-                              if (a is! Directory && b is Directory) return 1;
-                              return a.path.split('/').last.toLowerCase().compareTo(b.path.split('/').last.toLowerCase());
-                            });
-                          } catch (e) {
-                            return Center(child: Text('Error al leer archivos: $e'));
-                          }
-
-                          return ListView(
-                            key: const PageStorageKey('explorer_list'),
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            children: rootEntities
-                                .map((entity) => _FileTreeNode(
-                                      fileSystemEntity: entity,
-                                      depth: 0,
-                                    ))
-                                .toList(),
-                          );
                         },
                       ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      endDrawer: _ViewDrawer(
-        currentIndex: _navIndex,
-        onSelect: (index) {
-          setState(() => _navIndex = index);
-          Navigator.of(context).pop();
-        },
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: (showToolbar ? _toolbarHeight : 0.0) + MediaQuery.of(context).padding.bottom,
-            ),
-            child: Column(
-              children: [
-                if (_navIndex == 0) _TabBar(),
-                Expanded(
-                  child: IndexedStack(
-                    index: _navIndex,
-                    children: [
-                      const _EditorView(),
-                      const _GitPanel(),
+                      IconButton(
+                        icon: const Icon(Icons.create_new_folder, size: 20),
+                        tooltip: 'Crear Carpeta',
+                        onPressed: () {
+                          if (activeRepoPath != null) {
+                            _showCreateEntityDialog(context, ref, activeRepoPath, false);
+                          }
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.folder_open, size: 20),
+                        tooltip: 'Abrir Carpeta',
+                        onPressed: () => _openDocumentsProvider(context),
+                      ),
                     ],
                   ),
+                ),
+                const Divider(height: 1),
+                Expanded(
+                  child: activeRepoPath == null
+                      ? const Center(child: Text('Repositorio no seleccionado'))
+                      : Consumer(
+                          builder: (context, ref, child) {
+                            ref.watch(fileExplorerRefreshProvider);
+                            final dir = Directory(activeRepoPath);
+                            if (!dir.existsSync()) {
+                              return const Center(child: Text('Directorio no encontrado.'));
+                            }
+                            List<FileSystemEntity> rootEntities = [];
+                            try {
+                              rootEntities = dir.listSync();
+                              rootEntities.sort((a, b) {
+                                if (a is Directory && b is! Directory) return -1;
+                                if (a is! Directory && b is Directory) return 1;
+                                return a.path.split('/').last.toLowerCase().compareTo(b.path.split('/').last.toLowerCase());
+                              });
+                            } catch (e) {
+                              return Center(child: Text('Error al leer archivos: $e'));
+                            }
+
+                            return _FileExplorerList(rootEntities: rootEntities);
+                          },
+                        ),
                 ),
               ],
             ),
           ),
-          if (showToolbar)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: _BottomToolbar(height: _toolbarHeight),
+        ),
+        endDrawer: _ViewDrawer(
+          currentIndex: _navIndex,
+          onSelect: (index) {
+            setState(() => _navIndex = index);
+            Navigator.of(context).pop();
+          },
+        ),
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: (showToolbar ? _toolbarHeight : 0.0) + MediaQuery.of(context).padding.bottom,
+              ),
+              child: Column(
+                children: [
+                  if (_navIndex == 0) _TabBar(),
+                  Expanded(
+                    child: IndexedStack(
+                      index: _navIndex,
+                      children: [
+                        const _EditorView(),
+                        const _GitPanel(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-        ],
+            if (showToolbar)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: _BottomToolbar(height: _toolbarHeight),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -2229,6 +2261,53 @@ Future<void> _openDocumentsProvider(BuildContext context) async {
         SnackBar(content: Text(l10n.fileExplorerError(e.toString()))),
       );
     }
+  }
+}
+
+class _FileExplorerList extends ConsumerStatefulWidget {
+  final List<FileSystemEntity> rootEntities;
+  const _FileExplorerList({required this.rootEntities});
+
+  @override
+  ConsumerState<_FileExplorerList> createState() => _FileExplorerListState();
+}
+
+class _FileExplorerListState extends ConsumerState<_FileExplorerList> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialOffset = ref.read(explorerScrollOffsetProvider);
+    _scrollController = ScrollController(initialScrollOffset: initialOffset);
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.hasClients) {
+      ref.read(explorerScrollOffsetProvider.notifier).state = _scrollController.offset;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      controller: _scrollController,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      children: widget.rootEntities
+          .map((entity) => _FileTreeNode(
+                fileSystemEntity: entity,
+                depth: 0,
+              ))
+          .toList(),
+    );
   }
 }
 

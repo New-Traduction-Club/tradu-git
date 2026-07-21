@@ -5,9 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tradu_git/src/rust/api/simple.dart';
 
 /// Provider to store the selected local storage path (external backup workspace).
-final workspacePathProvider = StateNotifierProvider<WorkspacePathNotifier, String?>((ref) {
-  return WorkspacePathNotifier();
-});
+final workspacePathProvider =
+    StateNotifierProvider<WorkspacePathNotifier, String?>((ref) {
+      return WorkspacePathNotifier();
+    });
 
 class WorkspacePathNotifier extends StateNotifier<String?> {
   WorkspacePathNotifier() : super(null);
@@ -18,9 +19,10 @@ class WorkspacePathNotifier extends StateNotifier<String?> {
 }
 
 /// Provider to store the app's internal repositories storage path (where Git clones and edits run natively).
-final internalReposPathProvider = StateNotifierProvider<InternalReposPathNotifier, String?>((ref) {
-  return InternalReposPathNotifier();
-});
+final internalReposPathProvider =
+    StateNotifierProvider<InternalReposPathNotifier, String?>((ref) {
+      return InternalReposPathNotifier();
+    });
 
 class InternalReposPathNotifier extends StateNotifier<String?> {
   InternalReposPathNotifier() : super(null);
@@ -31,9 +33,10 @@ class InternalReposPathNotifier extends StateNotifier<String?> {
 }
 
 /// Provider to store the active repository path.
-final activeRepoPathProvider = StateNotifierProvider<ActiveRepoPathNotifier, String?>((ref) {
-  return ActiveRepoPathNotifier();
-});
+final activeRepoPathProvider =
+    StateNotifierProvider<ActiveRepoPathNotifier, String?>((ref) {
+      return ActiveRepoPathNotifier();
+    });
 
 class ActiveRepoPathNotifier extends StateNotifier<String?> {
   ActiveRepoPathNotifier() : super(null);
@@ -44,9 +47,10 @@ class ActiveRepoPathNotifier extends StateNotifier<String?> {
 }
 
 /// Provider to store the active file path open in the editor.
-final activeFilePathProvider = StateNotifierProvider<ActiveFilePathNotifier, String?>((ref) {
-  return ActiveFilePathNotifier();
-});
+final activeFilePathProvider =
+    StateNotifierProvider<ActiveFilePathNotifier, String?>((ref) {
+      return ActiveFilePathNotifier();
+    });
 
 class ActiveFilePathNotifier extends StateNotifier<String?> {
   ActiveFilePathNotifier() : super(null);
@@ -57,9 +61,10 @@ class ActiveFilePathNotifier extends StateNotifier<String?> {
 }
 
 /// Provider to track open files in the tabs.
-final openFilesProvider = StateNotifierProvider<OpenFilesNotifier, List<String>>((ref) {
-  return OpenFilesNotifier();
-});
+final openFilesProvider =
+    StateNotifierProvider<OpenFilesNotifier, List<String>>((ref) {
+      return OpenFilesNotifier();
+    });
 
 class OpenFilesNotifier extends StateNotifier<List<String>> {
   OpenFilesNotifier() : super([]);
@@ -80,9 +85,10 @@ class OpenFilesNotifier extends StateNotifier<List<String>> {
 }
 
 /// Provider to track expanded directories in the file explorer.
-final expandedDirsProvider = StateNotifierProvider<ExpandedDirsNotifier, Set<String>>((ref) {
-  return ExpandedDirsNotifier();
-});
+final expandedDirsProvider =
+    StateNotifierProvider<ExpandedDirsNotifier, Set<String>>((ref) {
+      return ExpandedDirsNotifier();
+    });
 
 class ExpandedDirsNotifier extends StateNotifier<Set<String>> {
   ExpandedDirsNotifier() : super({});
@@ -101,9 +107,10 @@ class ExpandedDirsNotifier extends StateNotifier<Set<String>> {
 }
 
 /// Provider to track which files have unsaved changes (dirty drafts).
-final dirtyFilesProvider = StateNotifierProvider<DirtyFilesNotifier, Set<String>>((ref) {
-  return DirtyFilesNotifier();
-});
+final dirtyFilesProvider =
+    StateNotifierProvider<DirtyFilesNotifier, Set<String>>((ref) {
+      return DirtyFilesNotifier();
+    });
 
 class DirtyFilesNotifier extends StateNotifier<Set<String>> {
   DirtyFilesNotifier() : super({});
@@ -137,20 +144,38 @@ class EditorStateInfo {
     required this.cursorLine,
     required this.cursorColumn,
   });
+
+  Map<String, dynamic> toJson() => {
+    'scrollX': scrollX,
+    'scrollY': scrollY,
+    'cursorLine': cursorLine,
+    'cursorColumn': cursorColumn,
+  };
+
+  factory EditorStateInfo.fromJson(Map<String, dynamic> json) {
+    return EditorStateInfo(
+      scrollX: json['scrollX'] as int? ?? 0,
+      scrollY: json['scrollY'] as int? ?? 0,
+      cursorLine: json['cursorLine'] as int? ?? 0,
+      cursorColumn: json['cursorColumn'] as int? ?? 0,
+    );
+  }
 }
 
-final fileEditorStatesProvider = StateNotifierProvider<FileEditorStatesNotifier, Map<String, EditorStateInfo>>((ref) {
-  return FileEditorStatesNotifier();
-});
+final fileEditorStatesProvider =
+    StateNotifierProvider<
+      FileEditorStatesNotifier,
+      Map<String, EditorStateInfo>
+    >((ref) {
+      return FileEditorStatesNotifier();
+    });
 
-class FileEditorStatesNotifier extends StateNotifier<Map<String, EditorStateInfo>> {
+class FileEditorStatesNotifier
+    extends StateNotifier<Map<String, EditorStateInfo>> {
   FileEditorStatesNotifier() : super({});
 
   void saveState(String path, EditorStateInfo info) {
-    state = {
-      ...state,
-      path: info,
-    };
+    state = {...state, path: info};
   }
 
   void removeState(String path) {
@@ -190,9 +215,10 @@ class GitStatusNotifier extends StateNotifier<AsyncValue<String>> {
   }
 }
 
-final gitStatusProvider = StateNotifierProvider<GitStatusNotifier, AsyncValue<String>>((ref) {
-  return GitStatusNotifier(ref)..refresh();
-});
+final gitStatusProvider =
+    StateNotifierProvider<GitStatusNotifier, AsyncValue<String>>((ref) {
+      return GitStatusNotifier(ref)..refresh();
+    });
 
 class GithubTokenNotifier extends StateNotifier<String?> {
   final Ref _ref;
@@ -235,9 +261,11 @@ class GithubTokenNotifier extends StateNotifier<String?> {
   }
 }
 
-final githubTokenProvider = StateNotifierProvider<GithubTokenNotifier, String?>((ref) {
-  return GithubTokenNotifier(ref);
-});
+final githubTokenProvider = StateNotifierProvider<GithubTokenNotifier, String?>(
+  (ref) {
+    return GithubTokenNotifier(ref);
+  },
+);
 
 class GithubUserInfo {
   final String username;
@@ -252,10 +280,7 @@ class GithubUserInfo {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'username': username,
-    'email': email,
-  };
+  Map<String, dynamic> toJson() => {'username': username, 'email': email};
 }
 
 class GithubUserNotifier extends StateNotifier<GithubUserInfo?> {
@@ -301,23 +326,26 @@ class GithubUserNotifier extends StateNotifier<GithubUserInfo?> {
   }
 }
 
-final githubUserProvider = StateNotifierProvider<GithubUserNotifier, GithubUserInfo?>((ref) {
-  return GithubUserNotifier(ref);
-});
+final githubUserProvider =
+    StateNotifierProvider<GithubUserNotifier, GithubUserInfo?>((ref) {
+      return GithubUserNotifier(ref);
+    });
 
 Future<GithubUserInfo?> fetchGithubUserProfile(String token) async {
   final client = HttpClient();
   try {
-    final request = await client.getUrl(Uri.parse('https://api.github.com/user'));
+    final request = await client.getUrl(
+      Uri.parse('https://api.github.com/user'),
+    );
     request.headers.set('Authorization', 'Bearer $token');
     request.headers.set('Accept', 'application/vnd.github+json');
     request.headers.set('User-Agent', 'Tradu-Git-App');
-    
+
     final response = await request.close();
     if (response.statusCode == 200) {
       final responseBody = await response.transform(utf8.decoder).join();
       final data = jsonDecode(responseBody) as Map<String, dynamic>;
-      
+
       final username = data['login'] as String? ?? '';
       var email = data['email'] as String?;
       if (email == null || email.isEmpty) {
@@ -333,7 +361,9 @@ Future<GithubUserInfo?> fetchGithubUserProfile(String token) async {
   return null;
 }
 
-final gitHistoryProvider = FutureProvider.autoDispose<List<GitCommitInfo>>((ref) async {
+final gitHistoryProvider = FutureProvider.autoDispose<List<GitCommitInfo>>((
+  ref,
+) async {
   final repoPath = ref.watch(activeRepoPathProvider);
   if (repoPath == null) {
     return [];
@@ -341,7 +371,9 @@ final gitHistoryProvider = FutureProvider.autoDispose<List<GitCommitInfo>>((ref)
   return gitLog(path: repoPath, maxCount: BigInt.from(50));
 });
 
-final gitCompareProvider = FutureProvider.autoDispose<GitCompareInfo?>((ref) async {
+final gitCompareProvider = FutureProvider.autoDispose<GitCompareInfo?>((
+  ref,
+) async {
   final repoPath = ref.watch(activeRepoPathProvider);
   if (repoPath == null) return null;
 
@@ -396,17 +428,22 @@ class GithubRepositoryInfo {
 Future<List<GithubRepositoryInfo>> fetchGithubRepositories(String token) async {
   final client = HttpClient();
   try {
-    final request = await client.getUrl(Uri.parse('https://api.github.com/user/repos?per_page=100&sort=updated'));
+    final request = await client.getUrl(
+      Uri.parse('https://api.github.com/user/repos?per_page=100&sort=updated'),
+    );
     request.headers.set('Authorization', 'Bearer $token');
     request.headers.set('Accept', 'application/vnd.github+json');
     request.headers.set('User-Agent', 'Tradu-Git-App');
-    
+
     final response = await request.close();
     if (response.statusCode == 200) {
       final responseBody = await response.transform(utf8.decoder).join();
       final list = jsonDecode(responseBody) as List<dynamic>;
       return list
-          .map((item) => GithubRepositoryInfo.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) =>
+                GithubRepositoryInfo.fromJson(item as Map<String, dynamic>),
+          )
           .toList();
     }
   } catch (e) {
@@ -445,11 +482,7 @@ class AppSettings {
     'simpleMode': simpleMode,
   };
 
-  AppSettings copyWith({
-    bool? wordWrap,
-    String? theme,
-    bool? simpleMode,
-  }) {
+  AppSettings copyWith({bool? wordWrap, String? theme, bool? simpleMode}) {
     return AppSettings(
       wordWrap: wordWrap ?? this.wordWrap,
       theme: theme ?? this.theme,
@@ -462,7 +495,9 @@ class AppSettingsNotifier extends StateNotifier<AppSettings> {
   final Ref _ref;
 
   AppSettingsNotifier(this._ref)
-      : super(const AppSettings(wordWrap: false, theme: 'darcula', simpleMode: false)) {
+    : super(
+        const AppSettings(wordWrap: false, theme: 'darcula', simpleMode: false),
+      ) {
     _ref.listen<String?>(internalReposPathProvider, (prev, next) {
       _loadSettings();
     });
@@ -511,8 +546,170 @@ class AppSettingsNotifier extends StateNotifier<AppSettings> {
   }
 }
 
-final appSettingsProvider = StateNotifierProvider<AppSettingsNotifier, AppSettings>((ref) {
-  return AppSettingsNotifier(ref);
+final appSettingsProvider =
+    StateNotifierProvider<AppSettingsNotifier, AppSettings>((ref) {
+      return AppSettingsNotifier(ref);
+    });
+
+final explorerScrollOffsetProvider = StateProvider<double>((ref) => 0.0);
+
+String _toRelative(String absolutePath, String repoPath) {
+  if (absolutePath.startsWith(repoPath)) {
+    var rel = absolutePath.substring(repoPath.length);
+    if (rel.startsWith('/')) {
+      rel = rel.substring(1);
+    }
+    return rel;
+  }
+  return absolutePath;
+}
+
+String _toAbsolute(String relativePath, String repoPath) {
+  if (relativePath.startsWith('/')) {
+    return relativePath;
+  }
+  return '$repoPath/$relativePath';
+}
+
+class RepoSessionManager {
+  final Ref _ref;
+  bool _isLoading = false;
+
+  RepoSessionManager(this._ref) {
+    _ref.listen<String?>(activeRepoPathProvider, (previous, next) {
+      if (previous != null) {
+        _saveSessionFor(previous);
+      }
+      if (next != null) {
+        _loadSessionFor(next);
+      } else {
+        _clearAll();
+      }
+    });
+
+    _ref.listen<List<String>>(openFilesProvider, (prev, next) => _autoSave());
+    _ref.listen<String?>(activeFilePathProvider, (prev, next) => _autoSave());
+    _ref.listen<Set<String>>(expandedDirsProvider, (prev, next) => _autoSave());
+    _ref.listen<Map<String, EditorStateInfo>>(
+      fileEditorStatesProvider,
+      (prev, next) => _autoSave(),
+    );
+    _ref.listen<double>(
+      explorerScrollOffsetProvider,
+      (prev, next) => _autoSave(),
+    );
+  }
+
+  void _clearAll() {
+    _isLoading = true;
+    _ref.read(openFilesProvider.notifier).clear();
+    _ref.read(activeFilePathProvider.notifier).setPath(null);
+    _ref.read(expandedDirsProvider.notifier).clear();
+    _ref.read(fileEditorStatesProvider.notifier).clear();
+    _ref.read(explorerScrollOffsetProvider.notifier).state = 0.0;
+    _isLoading = false;
+  }
+
+  void _autoSave() {
+    if (_isLoading) return;
+    final activeRepo = _ref.read(activeRepoPathProvider);
+    if (activeRepo != null) {
+      _saveSessionFor(activeRepo);
+    }
+  }
+
+  File _getSessionFile(String repoPath) {
+    final reposPath = _ref.read(internalReposPathProvider);
+    if (reposPath == null) {
+      throw StateError("Internal repos path is not initialized yet.");
+    }
+    final fileName = base64Url.encode(utf8.encode(repoPath)) + '.json';
+    return File('$reposPath/../sessions/$fileName');
+  }
+
+  Future<void> _saveSessionFor(String repoPath) async {
+    final file = _getSessionFile(repoPath);
+    try {
+      final openFiles = _ref.read(openFilesProvider);
+      final activeFile = _ref.read(activeFilePathProvider);
+      final expandedDirs = _ref.read(expandedDirsProvider);
+      final editorStates = _ref.read(fileEditorStatesProvider);
+      final explorerScrollOffset = _ref.read(explorerScrollOffsetProvider);
+
+      final sessionData = {
+        'openFiles': openFiles.map((p) => _toRelative(p, repoPath)).toList(),
+        'activeFilePath': activeFile != null
+            ? _toRelative(activeFile, repoPath)
+            : null,
+        'expandedDirs': expandedDirs
+            .map((p) => _toRelative(p, repoPath))
+            .toList(),
+        'editorStates': editorStates.map(
+          (k, v) => MapEntry(_toRelative(k, repoPath), v.toJson()),
+        ),
+        'explorerScrollOffset': explorerScrollOffset,
+      };
+
+      if (!file.parent.existsSync()) {
+        file.parent.createSync(recursive: true);
+      }
+      await file.writeAsString(jsonEncode(sessionData));
+    } catch (e) {
+      debugPrint('Error saving session for $repoPath: $e');
+    }
+  }
+
+  Future<void> _loadSessionFor(String repoPath) async {
+    final file = _getSessionFile(repoPath);
+    if (!file.existsSync()) {
+      _clearAll();
+      return;
+    }
+
+    _isLoading = true;
+    try {
+      final content = await file.readAsString();
+      final json = jsonDecode(content) as Map<String, dynamic>;
+
+      final rawOpenFiles = json['openFiles'] as List<dynamic>? ?? [];
+      final rawActiveFile = json['activeFilePath'] as String?;
+      final rawExpandedDirs = json['expandedDirs'] as List<dynamic>? ?? [];
+      final rawEditorStates =
+          json['editorStates'] as Map<String, dynamic>? ?? {};
+      final explorerScrollOffset =
+          json['explorerScrollOffset'] as double? ?? 0.0;
+
+      final openFiles = rawOpenFiles
+          .map((p) => _toAbsolute(p as String, repoPath))
+          .toList();
+      final activeFile = rawActiveFile != null
+          ? _toAbsolute(rawActiveFile, repoPath)
+          : null;
+      final expandedDirs = rawExpandedDirs
+          .map((p) => _toAbsolute(p as String, repoPath))
+          .toSet();
+      final editorStates = rawEditorStates.map(
+        (k, v) => MapEntry(
+          _toAbsolute(k, repoPath),
+          EditorStateInfo.fromJson(v as Map<String, dynamic>),
+        ),
+      );
+
+      _ref.read(fileEditorStatesProvider.notifier).state = editorStates;
+      _ref.read(explorerScrollOffsetProvider.notifier).state =
+          explorerScrollOffset;
+      _ref.read(openFilesProvider.notifier).state = openFiles;
+      _ref.read(expandedDirsProvider.notifier).state = expandedDirs;
+      _ref.read(activeFilePathProvider.notifier).setPath(activeFile);
+    } catch (e) {
+      debugPrint('Error loading session for $repoPath: $e');
+      _clearAll();
+    } finally {
+      _isLoading = false;
+    }
+  }
+}
+
+final repoSessionManagerProvider = Provider<RepoSessionManager>((ref) {
+  return RepoSessionManager(ref);
 });
-
-
