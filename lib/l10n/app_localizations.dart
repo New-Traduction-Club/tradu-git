@@ -385,6 +385,378 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @folderNotConfigured.
+  ///
+  /// In es, this message translates to:
+  /// **'Carpeta no configurada'**
+  String get folderNotConfigured;
+
+  /// No description provided for @selectFolderDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Debes seleccionar una carpeta donde se almacenarán tus repositorios.'**
+  String get selectFolderDescription;
+
+  /// No description provided for @configureNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Configurar ahora'**
+  String get configureNow;
+
+  /// No description provided for @folderNotExist.
+  ///
+  /// In es, this message translates to:
+  /// **'La carpeta seleccionada no existe.'**
+  String get folderNotExist;
+
+  /// No description provided for @retry.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get retry;
+
+  /// No description provided for @clonedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Clonado: {name}'**
+  String clonedSuccess(String name);
+
+  /// No description provided for @cloneRepositoryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Clonar Repositorio'**
+  String get cloneRepositoryTitle;
+
+  /// No description provided for @gitUrlHttps.
+  ///
+  /// In es, this message translates to:
+  /// **'URL HTTPS'**
+  String get gitUrlHttps;
+
+  /// No description provided for @gitHubList.
+  ///
+  /// In es, this message translates to:
+  /// **'Lista de GitHub'**
+  String get gitHubList;
+
+  /// No description provided for @gitUrlLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'URL Git (HTTPS)'**
+  String get gitUrlLabel;
+
+  /// No description provided for @localFolderName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre de la carpeta local'**
+  String get localFolderName;
+
+  /// No description provided for @cloning.
+  ///
+  /// In es, this message translates to:
+  /// **'Clonando...'**
+  String get cloning;
+
+  /// No description provided for @readError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al leer: {error}'**
+  String readError(String error);
+
+  /// No description provided for @starting.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciando...'**
+  String get starting;
+
+  /// No description provided for @syncingRepo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizando repositorio...'**
+  String get syncingRepo;
+
+  /// No description provided for @repoSynced.
+  ///
+  /// In es, this message translates to:
+  /// **'Repositorio sincronizado.'**
+  String get repoSynced;
+
+  /// No description provided for @syncError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al sincronizar: {error}'**
+  String syncError(String error);
+
+  /// No description provided for @dirNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Directorio no encontrado.'**
+  String get dirNotFound;
+
+  /// No description provided for @fileReadError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al leer archivos: {error}'**
+  String fileReadError(String error);
+
+  /// No description provided for @createFileIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear archivo en {name}'**
+  String createFileIn(String name);
+
+  /// No description provided for @createFolderIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear carpeta en {name}'**
+  String createFolderIn(String name);
+
+  /// No description provided for @discardChangesQuestion.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Descartar cambios?'**
+  String get discardChangesQuestion;
+
+  /// No description provided for @discardUnsavedChangesContent.
+  ///
+  /// In es, this message translates to:
+  /// **'Si cierras esta pestaña, se perderán todos los cambios no guardados en {fileName}.'**
+  String discardUnsavedChangesContent(String fileName);
+
+  /// No description provided for @discard.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar'**
+  String get discard;
+
+  /// No description provided for @sessionLoggedOut.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión de GitHub cerrada.'**
+  String get sessionLoggedOut;
+
+  /// No description provided for @discardLocalChangesContent.
+  ///
+  /// In es, this message translates to:
+  /// **'Esto revertirá todos los cambios locales en \"{relPath}\" y no se pueden recuperar.'**
+  String discardLocalChangesContent(String relPath);
+
+  /// No description provided for @changesDiscardedIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambios descartados en {relPath}'**
+  String changesDiscardedIn(String relPath);
+
+  /// No description provided for @discardError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al descartar cambios: {error}'**
+  String discardError(String error);
+
+  /// No description provided for @syncingPull.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizando: Haciendo Pull...'**
+  String get syncingPull;
+
+  /// No description provided for @syncingPush.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizando: Haciendo Push...'**
+  String get syncingPush;
+
+  /// No description provided for @syncFinishedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronización finalizada con éxito.'**
+  String get syncFinishedSuccess;
+
+  /// No description provided for @fetchingChanges.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando cambios (Fetch)...'**
+  String get fetchingChanges;
+
+  /// No description provided for @ready.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo.'**
+  String get ready;
+
+  /// No description provided for @fetchError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al buscar cambios: {error}'**
+  String fetchError(String error);
+
+  /// No description provided for @createNewBranchTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nueva rama'**
+  String get createNewBranchTitle;
+
+  /// No description provided for @noLocalBranchesFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron ramas locales.'**
+  String get noLocalBranchesFound;
+
+  /// No description provided for @activeBranchLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa'**
+  String get activeBranchLabel;
+
+  /// No description provided for @branchLoaded.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargada rama: {branchName}'**
+  String branchLoaded(String branchName);
+
+  /// No description provided for @branchSwitchErrorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cambiar de rama'**
+  String get branchSwitchErrorTitle;
+
+  /// No description provided for @createBranchErrorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al crear rama'**
+  String get createBranchErrorTitle;
+
+  /// No description provided for @branchCreatedAndLoaded.
+  ///
+  /// In es, this message translates to:
+  /// **'Creada y cargada rama: {branchName}'**
+  String branchCreatedAndLoaded(String branchName);
+
+  /// No description provided for @sync.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizar'**
+  String get sync;
+
+  /// No description provided for @editor.
+  ///
+  /// In es, this message translates to:
+  /// **'Editor'**
+  String get editor;
+
+  /// No description provided for @wordWrapSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustar líneas para que quepan en la pantalla sin movimiento horizontal.'**
+  String get wordWrapSubtitle;
+
+  /// No description provided for @themeDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'Por defecto'**
+  String get themeDefault;
+
+  /// No description provided for @themeBlack.
+  ///
+  /// In es, this message translates to:
+  /// **'Negro'**
+  String get themeBlack;
+
+  /// No description provided for @simpleModeSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronización automática de Git al abrir y guardar archivos.'**
+  String get simpleModeSubtitle;
+
+  /// No description provided for @enableSimpleModeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Activar Modo Simple'**
+  String get enableSimpleModeTitle;
+
+  /// No description provided for @simpleModeIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'El Modo Simple automatiza las operaciones de Git para facilitar la sincronización:'**
+  String get simpleModeIntro;
+
+  /// No description provided for @simpleModeDetails.
+  ///
+  /// In es, this message translates to:
+  /// **'• Al abrir un repositorio, se realizarán automáticamente las operaciones de búsqueda y obtención de cambios.\n• Al guardar cualquier archivo se creará un commit automático y se enviarán los cambios.'**
+  String get simpleModeDetails;
+
+  /// No description provided for @simpleModeWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'• Si hay cambios conflictivos en el repositorio remoto, las operaciones automáticas podrían fallar y requerir interacción humana.'**
+  String get simpleModeWarning;
+
+  /// No description provided for @enable.
+  ///
+  /// In es, this message translates to:
+  /// **'Activar'**
+  String get enable;
+
+  /// No description provided for @gitHubSessionClosed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión de GitHub cerrada.'**
+  String get gitHubSessionClosed;
+
+  /// No description provided for @gitHubSessionStarted.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión iniciada en GitHub.'**
+  String get gitHubSessionStarted;
+
+  /// No description provided for @writeCommitMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un mensaje.'**
+  String get writeCommitMessage;
+
+  /// No description provided for @commitDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Commit hecho.'**
+  String get commitDone;
+
+  /// No description provided for @fileExists.
+  ///
+  /// In es, this message translates to:
+  /// **'El archivo ya existe.'**
+  String get fileExists;
+
+  /// No description provided for @folderExists.
+  ///
+  /// In es, this message translates to:
+  /// **'La carpeta ya existe.'**
+  String get folderExists;
+
+  /// No description provided for @createdSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Creado: {name}'**
+  String createdSuccess(String name);
+
+  /// No description provided for @createError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al crear: {error}'**
+  String createError(String error);
+
+  /// No description provided for @fileExplorerError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir el explorador de archivos: {error}'**
+  String fileExplorerError(String error);
+
+  /// No description provided for @noChangesToCommit.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cambios para hacer commit'**
+  String get noChangesToCommit;
 }
 
 class _AppLocalizationsDelegate

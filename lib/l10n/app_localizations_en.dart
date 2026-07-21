@@ -160,4 +160,228 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get folderNotConfigured => 'Folder not configured';
+
+  @override
+  String get selectFolderDescription =>
+      'You must select a folder where your repositories will be stored.';
+
+  @override
+  String get configureNow => 'Configure now';
+
+  @override
+  String get folderNotExist => 'Selected folder does not exist.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String clonedSuccess(String name) {
+    return 'Cloned: $name';
+  }
+
+  @override
+  String get cloneRepositoryTitle => 'Clone Repository';
+
+  @override
+  String get gitUrlHttps => 'HTTPS URL';
+
+  @override
+  String get gitHubList => 'GitHub List';
+
+  @override
+  String get gitUrlLabel => 'Git URL (HTTPS)';
+
+  @override
+  String get localFolderName => 'Local folder name';
+
+  @override
+  String get cloning => 'Cloning...';
+
+  @override
+  String readError(String error) {
+    return 'Read error: $error';
+  }
+
+  @override
+  String get starting => 'Starting...';
+
+  @override
+  String get syncingRepo => 'Syncing repository...';
+
+  @override
+  String get repoSynced => 'Repository synced.';
+
+  @override
+  String syncError(String error) {
+    return 'Sync error: $error';
+  }
+
+  @override
+  String get dirNotFound => 'Directory not found.';
+
+  @override
+  String fileReadError(String error) {
+    return 'File read error: $error';
+  }
+
+  @override
+  String createFileIn(String name) {
+    return 'Create file in $name';
+  }
+
+  @override
+  String createFolderIn(String name) {
+    return 'Create folder in $name';
+  }
+
+  @override
+  String get discardChangesQuestion => 'Discard changes?';
+
+  @override
+  String discardUnsavedChangesContent(String fileName) {
+    return 'If you close this tab, all unsaved changes in $fileName will be lost.';
+  }
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get sessionLoggedOut => 'GitHub session closed.';
+
+  @override
+  String discardLocalChangesContent(String relPath) {
+    return 'This will revert all local changes in \"$relPath\" and they cannot be recovered.';
+  }
+
+  @override
+  String changesDiscardedIn(String relPath) {
+    return 'Changes discarded in $relPath';
+  }
+
+  @override
+  String discardError(String error) {
+    return 'Discard error: $error';
+  }
+
+  @override
+  String get syncingPull => 'Syncing: Pulling...';
+
+  @override
+  String get syncingPush => 'Syncing: Pushing...';
+
+  @override
+  String get syncFinishedSuccess => 'Sync finished successfully.';
+
+  @override
+  String get fetchingChanges => 'Fetching changes...';
+
+  @override
+  String get ready => 'Ready.';
+
+  @override
+  String fetchError(String error) {
+    return 'Fetch error: $error';
+  }
+
+  @override
+  String get createNewBranchTitle => 'Create new branch';
+
+  @override
+  String get noLocalBranchesFound => 'No local branches found.';
+
+  @override
+  String get activeBranchLabel => 'Active';
+
+  @override
+  String branchLoaded(String branchName) {
+    return 'Loaded branch: $branchName';
+  }
+
+  @override
+  String get branchSwitchErrorTitle => 'Error switching branch';
+
+  @override
+  String get createBranchErrorTitle => 'Error creating branch';
+
+  @override
+  String branchCreatedAndLoaded(String branchName) {
+    return 'Created and loaded branch: $branchName';
+  }
+
+  @override
+  String get sync => 'Sync';
+
+  @override
+  String get editor => 'Editor';
+
+  @override
+  String get wordWrapSubtitle =>
+      'Wrap lines to fit screen without horizontal scrolling.';
+
+  @override
+  String get themeDefault => 'Default';
+
+  @override
+  String get themeBlack => 'Black';
+
+  @override
+  String get simpleModeSubtitle =>
+      'Automatic Git synchronization when opening and saving files.';
+
+  @override
+  String get enableSimpleModeTitle => 'Enable Simple Mode';
+
+  @override
+  String get simpleModeIntro =>
+      'Simple Mode automates Git operations for easier syncing:';
+
+  @override
+  String get simpleModeDetails =>
+      '• Opening a repo automatically runs fetch and pull operations.\n• Saving any file automatically commits and pushes changes.';
+
+  @override
+  String get simpleModeWarning =>
+      '• If there are conflicting remote changes, automatic operations may fail and require manual intervention.';
+
+  @override
+  String get enable => 'Enable';
+
+  @override
+  String get gitHubSessionClosed => 'GitHub session closed.';
+
+  @override
+  String get gitHubSessionStarted => 'Signed in to GitHub.';
+
+  @override
+  String get writeCommitMessage => 'Write a message.';
+
+  @override
+  String get commitDone => 'Commit created.';
+
+  @override
+  String get fileExists => 'File already exists.';
+
+  @override
+  String get folderExists => 'Folder already exists.';
+
+  @override
+  String createdSuccess(String name) {
+    return 'Created: $name';
+  }
+
+  @override
+  String createError(String error) {
+    return 'Error creating: $error';
+  }
+
+  @override
+  String fileExplorerError(String error) {
+    return 'Could not open file explorer: $error';
+  }
+
+  @override
+  String get noChangesToCommit => 'No changes to commit';
 }

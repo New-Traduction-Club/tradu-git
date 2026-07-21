@@ -75,5 +75,179 @@
   "cancel": "Cancelar",
   "save": "Guardar",
   "ok": "Aceptar",
-  "error": "Error"
+  "error": "Error",
+  "folderNotConfigured": "Carpeta no configurada",
+  "selectFolderDescription": "Debes seleccionar una carpeta donde se almacenarán tus repositorios.",
+  "configureNow": "Configurar ahora",
+  "folderNotExist": "La carpeta seleccionada no existe.",
+  "retry": "Reintentar",
+  "clonedSuccess": "Clonado: {name}",
+  "@clonedSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cloneRepositoryTitle": "Clonar Repositorio",
+  "gitUrlHttps": "URL HTTPS",
+  "gitHubList": "Lista de GitHub",
+  "gitUrlLabel": "URL Git (HTTPS)",
+  "localFolderName": "Nombre de la carpeta local",
+  "cloning": "Clonando...",
+  "readError": "Error al leer: {error}",
+  "@readError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "starting": "Iniciando...",
+  "syncingRepo": "Sincronizando repositorio...",
+  "repoSynced": "Repositorio sincronizado.",
+  "syncError": "Error al sincronizar: {error}",
+  "@syncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "dirNotFound": "Directorio no encontrado.",
+  "fileReadError": "Error al leer archivos: {error}",
+  "@fileReadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "createFileIn": "Crear archivo en {name}",
+  "@createFileIn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "createFolderIn": "Crear carpeta en {name}",
+  "@createFolderIn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "discardChangesQuestion": "¿Descartar cambios?",
+  "discardUnsavedChangesContent": "Si cierras esta pestaña, se perderán todos los cambios no guardados en {fileName}.",
+  "@discardUnsavedChangesContent": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "discard": "Descartar",
+  "sessionLoggedOut": "Sesión de GitHub cerrada.",
+  "discardLocalChangesContent": "Esto revertirá todos los cambios locales en \"{relPath}\" y no se pueden recuperar.",
+  "@discardLocalChangesContent": {
+    "placeholders": {
+      "relPath": {
+        "type": "String"
+      }
+    }
+  },
+  "changesDiscardedIn": "Cambios descartados en {relPath}",
+  "@changesDiscardedIn": {
+    "placeholders": {
+      "relPath": {
+        "type": "String"
+      }
+    }
+  },
+  "discardError": "Error al descartar cambios: {error}",
+  "@discardError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "syncingPull": "Sincronizando: Haciendo Pull...",
+  "syncingPush": "Sincronizando: Haciendo Push...",
+  "syncFinishedSuccess": "Sincronización finalizada con éxito.",
+  "fetchingChanges": "Buscando cambios (Fetch)...",
+  "ready": "Listo.",
+  "fetchError": "Error al buscar cambios: {error}",
+  "@fetchError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "createNewBranchTitle": "Crear nueva rama",
+  "noLocalBranchesFound": "No se encontraron ramas locales.",
+  "activeBranchLabel": "Activa",
+  "branchLoaded": "Cargada rama: {branchName}",
+  "@branchLoaded": {
+    "placeholders": {
+      "branchName": {
+        "type": "String"
+      }
+    }
+  },
+  "branchSwitchErrorTitle": "Error al cambiar de rama",
+  "createBranchErrorTitle": "Error al crear rama",
+  "branchCreatedAndLoaded": "Creada y cargada rama: {branchName}",
+  "@branchCreatedAndLoaded": {
+    "placeholders": {
+      "branchName": {
+        "type": "String"
+      }
+    }
+  },
+  "sync": "Sincronizar",
+  "editor": "Editor",
+  "wordWrapSubtitle": "Ajustar líneas para que quepan en la pantalla sin movimiento horizontal.",
+  "themeDefault": "Por defecto",
+  "themeBlack": "Negro",
+  "simpleModeSubtitle": "Sincronización automática de Git al abrir y guardar archivos.",
+  "enableSimpleModeTitle": "Activar Modo Simple",
+  "simpleModeIntro": "El Modo Simple automatiza las operaciones de Git para facilitar la sincronización:",
+  "simpleModeDetails": "• Al abrir un repositorio, se realizarán automáticamente las operaciones de búsqueda y obtención de cambios.\n• Al guardar cualquier archivo se creará un commit automático y se enviarán los cambios.",
+  "simpleModeWarning": "• Si hay cambios conflictivos en el repositorio remoto, las operaciones automáticas podrían fallar y requerir interacción humana.",
+  "enable": "Activar",
+  "gitHubSessionClosed": "Sesión de GitHub cerrada.",
+  "gitHubSessionStarted": "Sesión iniciada en GitHub.",
+  "writeCommitMessage": "Escribe un mensaje.",
+  "commitDone": "Commit hecho.",
+  "fileExists": "El archivo ya existe.",
+  "folderExists": "La carpeta ya existe.",
+  "createdSuccess": "Creado: {name}",
+  "@createdSuccess": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "createError": "Error al crear: {error}",
+  "@createError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "fileExplorerError": "No se pudo abrir el explorador de archivos: {error}",
+  "@fileExplorerError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noChangesToCommit": "Sin cambios para hacer commit"
 }

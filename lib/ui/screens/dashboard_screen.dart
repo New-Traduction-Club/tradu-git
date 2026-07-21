@@ -132,6 +132,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildSetupPrompt() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -141,19 +142,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             const Icon(Icons.folder_shared, size: 64, color: AppTheme.muted),
             const SizedBox(height: 20),
             Text(
-              'Carpeta no configurado',
+              l10n.folderNotConfigured,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'Debes seleccionar una carpeta donde se almacenarán tus repositorios.',
+              l10n.selectFolderDescription,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppTheme.muted),
             ),
             const SizedBox(height: 24),
             FilledButton(
               onPressed: () => Navigator.pushNamed(context, '/saf'),
-              child: const Text('Configurar ahora'),
+              child: Text(l10n.configureNow),
             ),
           ],
         ),
@@ -162,13 +163,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildErrorView() {
+    final l10n = AppLocalizations.of(context)!;
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
         const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
         const SizedBox(height: 16),
         Text(
-          'Ocurrió un error',
+          l10n.error,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
@@ -182,7 +184,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         Center(
           child: OutlinedButton(
             onPressed: _loadRepos,
-            child: const Text('Reintentar'),
+            child: Text(l10n.retry),
           ),
         ),
       ],
@@ -441,37 +443,27 @@ class _CloneSheetState extends State<_CloneSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 20, 20, 28 + bottomInset),
       decoration: const BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.zero,
+        border: Border(top: BorderSide(color: AppTheme.border, width: 1)),
       ),
+      padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + bottomInset),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Spacer(),
-              if (!_cloning)
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
           Text(
-            'Clonar repositorio',
+            l10n.cloneGitUrl,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
           ),
           const SizedBox(height: 12),
           Text(
-            'Ingresa la URL del repositorio Git HTTPS.',
+            l10n.enterRepositoryUrl,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppTheme.ink.withOpacity(0.6),
                 ),
@@ -480,8 +472,8 @@ class _CloneSheetState extends State<_CloneSheet> {
           TextField(
             controller: _urlController,
             enabled: !_cloning,
-            decoration: const InputDecoration(
-              labelText: 'URL Git (HTTPS)',
+            decoration: InputDecoration(
+              labelText: l10n.gitUrlLabel,
               hintText: 'https://github.com/user/repo.git',
             ),
             keyboardType: TextInputType.url,
@@ -491,8 +483,8 @@ class _CloneSheetState extends State<_CloneSheet> {
           TextField(
             controller: _nameController,
             enabled: !_cloning,
-            decoration: const InputDecoration(
-              labelText: 'Nombre de la carpeta local',
+            decoration: InputDecoration(
+              labelText: l10n.localFolderName,
               hintText: 'repo-name',
             ),
             textInputAction: TextInputAction.done,
@@ -509,22 +501,22 @@ class _CloneSheetState extends State<_CloneSheet> {
           SizedBox(
             width: double.infinity,
             child: _cloning
-                ? const Center(
+                ? Center(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(strokeWidth: 2),
-                          SizedBox(width: 16),
-                          Text('Clonando repositorio...'),
+                          const CircularProgressIndicator(strokeWidth: 2),
+                          const SizedBox(width: 16),
+                          Text(l10n.cloningRepository),
                         ],
                       ),
                     ),
                   )
                 : FilledButton(
                     onPressed: _startClone,
-                    child: const Text('Clonar'),
+                    child: Text(l10n.clone),
                   ),
           ),
         ],
@@ -544,13 +536,14 @@ class _CloneSourceDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final token = ref.watch(githubTokenProvider);
     final hasToken = token != null && token.isNotEmpty;
 
     return AlertDialog(
       backgroundColor: AppTheme.surface,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-      title: const Text('Clonar Repositorio', style: TextStyle(color: AppTheme.ink)),
+      title: Text(l10n.cloneRepositoryTitle, style: const TextStyle(color: AppTheme.ink)),
       actions: [
         TextButton.icon(
           onPressed: () {
@@ -565,7 +558,7 @@ class _CloneSourceDialog extends ConsumerWidget {
               ),
             );
           },
-          label: const Text('URL HTTPS', style: TextStyle(color: AppTheme.accent)),
+          label: Text(l10n.gitUrlHttps, style: const TextStyle(color: AppTheme.accent)),
         ),
         FilledButton.icon(
           style: FilledButton.styleFrom(
@@ -587,7 +580,7 @@ class _CloneSourceDialog extends ConsumerWidget {
                   );
                 }
               : null,
-          label: const Text('Lista de GitHub'),
+          label: Text(l10n.gitHubList),
         ),
       ],
     );

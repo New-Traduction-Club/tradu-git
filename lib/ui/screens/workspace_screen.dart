@@ -255,6 +255,7 @@ class _FileTreeNode extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     ref.watch(fileExplorerRefreshProvider);
     final entity = fileSystemEntity;
     final name = entity.path.split('/').last;
@@ -294,7 +295,7 @@ class _FileTreeNode extends ConsumerWidget {
                     children: [
                       ListTile(
                         leading: const Icon(Icons.note_add),
-                        title: Text('Crear archivo en $name'),
+                        title: Text(l10n.createFileIn(name)),
                         onTap: () {
                           Navigator.of(ctx).pop();
                           _showCreateEntityDialog(context, ref, entity.path, true);
@@ -302,7 +303,7 @@ class _FileTreeNode extends ConsumerWidget {
                       ),
                       ListTile(
                         leading: const Icon(Icons.create_new_folder),
-                        title: Text('Crear carpeta en $name'),
+                        title: Text(l10n.createFolderIn(name)),
                         onTap: () {
                           Navigator.of(ctx).pop();
                           _showCreateEntityDialog(context, ref, entity.path, false);
@@ -436,6 +437,7 @@ class _TabBar extends ConsumerWidget {
               dirty: isDirty,
               active: isActive,
               onClose: () async {
+                final l10n = AppLocalizations.of(context)!;
                 bool isDirty = dirtyFiles.contains(filePath);
                 if (isActive) {
                   try {
@@ -459,16 +461,16 @@ class _TabBar extends ConsumerWidget {
                   final confirm = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('¿Descartar cambios?'),
-                      content: Text('Si cierras esta pestaña, se perderán todos los cambios no guardados en $fileName.'),
+                      title: Text(l10n.discardChangesQuestion),
+                      content: Text(l10n.discardUnsavedChangesContent(fileName)),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('Cancelar'),
+                          child: Text(l10n.cancel),
                         ),
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text('Descartar', style: TextStyle(color: Colors.red)),
+                          child: Text(l10n.discard, style: const TextStyle(color: Colors.red)),
                         ),
                       ],
                     ),
@@ -715,14 +717,16 @@ class _GitPanelState extends ConsumerState<_GitPanel> {
       }
       await ref.read(githubTokenProvider.notifier).saveToken(token);
       
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sesión iniciada en GitHub.')),
+        SnackBar(content: Text(l10n.gitHubSessionStarted)),
       );
       ref.invalidate(gitHistoryProvider);
       ref.invalidate(gitCompareProvider);
     } else {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al intercambiar el código por token.')),
+        SnackBar(content: Text(l10n.codeExchangeError)),
       );
     }
   }
@@ -781,6 +785,7 @@ class _GitPanelState extends ConsumerState<_GitPanel> {
   }
 
   Widget _buildGitHubOAuthSection() {
+    final l10n = AppLocalizations.of(context)!;
     final token = ref.watch(githubTokenProvider);
     final user = ref.watch(githubUserProvider);
     final reposPath = ref.watch(internalReposPathProvider);
@@ -824,11 +829,12 @@ class _GitPanelState extends ConsumerState<_GitPanel> {
                 onPressed: () async {
                   await ref.read(githubUserProvider.notifier).saveUserInfo(null);
                   await ref.read(githubTokenProvider.notifier).saveToken(null);
+                  final l10n = AppLocalizations.of(context)!;
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Sesión de GitHub cerrada.')),
+                    SnackBar(content: Text(l10n.gitHubSessionClosed)),
                   );
                 },
-                child: const Text('Cerrar Sesión'),
+                child: Text(l10n.logout),
               ),
             ] else ...[
               const Text(
@@ -1401,10 +1407,11 @@ class _GitPanelState extends ConsumerState<_GitPanel> {
                   onPressed: _isCommitting
                       ? null
                       : () async {
+                          final l10n = AppLocalizations.of(context)!;
                           final msg = _commitMessageController.text.trim();
                           if (msg.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Escribe un mensaje.')),
+                              SnackBar(content: Text(l10n.writeCommitMessage)),
                             );
                             return;
                           }
@@ -1423,13 +1430,13 @@ class _GitPanelState extends ConsumerState<_GitPanel> {
                             );
                             _commitMessageController.clear();
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Commit hecho.')),
+                              SnackBar(content: Text(l10n.commitDone)),
                             );
                             ref.invalidate(gitHistoryProvider);
                             ref.invalidate(gitCompareProvider);
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error al hacer commit: $e')),
+                              SnackBar(content: Text(l10n.commitError(e.toString()))),
                             );
                           } finally {
                             setState(() => _isCommitting = false);
@@ -2168,6 +2175,7 @@ Future<void> _showCreateEntityDialog(
         ),
         TextButton(
           onPressed: () {
+            final l10n = AppLocalizations.of(context)!;
             final name = controller.text.trim();
             if (name.isEmpty) return;
 
@@ -2177,7 +2185,7 @@ Future<void> _showCreateEntityDialog(
                 final file = File(newPath);
                 if (file.existsSync()) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('El archivo ya existe.')),
+                    SnackBar(content: Text(l10n.fileExists)),
                   );
                   return;
                 }
@@ -2186,7 +2194,7 @@ Future<void> _showCreateEntityDialog(
                 final dir = Directory(newPath);
                 if (dir.existsSync()) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('La carpeta ya existe.')),
+                    SnackBar(content: Text(l10n.folderExists)),
                   );
                   return;
                 }
@@ -2197,11 +2205,11 @@ Future<void> _showCreateEntityDialog(
               Navigator.of(context).pop();
 
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Creado: $name')),
+                SnackBar(content: Text(l10n.createdSuccess(name))),
               );
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error al crear: $e')),
+                SnackBar(content: Text(l10n.createError(e.toString()))),
               );
             }
           },
@@ -2218,9 +2226,12 @@ Future<void> _openDocumentsProvider(BuildContext context) async {
     await storageChannel.invokeMethod('openDocumentsProvider');
   } catch (e) {
     debugPrint('Error opening documents provider: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('No se pudo abrir el explorador de archivos: $e')),
-    );
+    if (context.mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.fileExplorerError(e.toString()))),
+      );
+    }
   }
 }
 

@@ -22,7 +22,7 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 16),
         children: [
-          _buildSectionHeader('Editor'),
+          _buildSectionHeader(l10n.editor),
           SwitchListTile(
             value: settings.wordWrap,
             activeColor: AppTheme.accent,
@@ -38,9 +38,9 @@ class SettingsScreen extends ConsumerWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            subtitle: const Text(
-              'Ajustar líneas para que quepan en la pantalla sin movimiento horizontal.',
-              style: TextStyle(
+            subtitle: Text(
+              l10n.wordWrapSubtitle,
+              style: const TextStyle(
                 color: AppTheme.muted,
                 fontSize: 12,
               ),
@@ -60,7 +60,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             subtitle: Text(
-              settings.theme == 'amoled' ? 'Negro' : 'Por defecto',
+              settings.theme == 'amoled' ? l10n.themeBlack : l10n.themeDefault,
               style: const TextStyle(
                 color: AppTheme.muted,
                 fontSize: 12,
@@ -87,9 +87,9 @@ class SettingsScreen extends ConsumerWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            subtitle: const Text(
-              'Sincronización automática de Git al abrir y guardar archivos.',
-              style: TextStyle(
+            subtitle: Text(
+              l10n.simpleModeSubtitle,
+              style: const TextStyle(
                 color: AppTheme.muted,
                 fontSize: 12,
               ),
@@ -124,6 +124,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showThemeSelectorDialog(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -136,9 +137,9 @@ class SettingsScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
                 side: const BorderSide(color: AppTheme.border, width: 1),
               ),
-              title: const Text(
-                'Tema del Editor',
-                style: TextStyle(
+              title: Text(
+                l10n.editorTheme,
+                style: const TextStyle(
                   color: AppTheme.ink,
                   fontWeight: FontWeight.bold,
                 ),
@@ -148,9 +149,9 @@ class SettingsScreen extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   RadioListTile<String>(
-                    title: const Text(
-                      'Por defecto',
-                      style: TextStyle(color: AppTheme.ink),
+                    title: Text(
+                      l10n.themeDefault,
+                      style: const TextStyle(color: AppTheme.ink),
                     ),
                     value: 'darcula',
                     groupValue: currentTheme,
@@ -163,9 +164,9 @@ class SettingsScreen extends ConsumerWidget {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text(
-                      'Negro',
-                      style: TextStyle(color: AppTheme.ink),
+                    title: Text(
+                      l10n.themeBlack,
+                      style: const TextStyle(color: AppTheme.ink),
                     ),
                     value: 'amoled',
                     groupValue: currentTheme,
@@ -187,6 +188,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showSimpleModeCautionDialog(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) {
@@ -196,32 +198,31 @@ class SettingsScreen extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
             side: const BorderSide(color: AppTheme.border, width: 1),
           ),
-          title: const Text(
-            'Activar Modo Simple',
-            style: TextStyle(
+          title: Text(
+            l10n.enableSimpleModeTitle,
+            style: const TextStyle(
               color: AppTheme.ink,
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: const SingleChildScrollView(
+          content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'El Modo Simple automatiza las operaciones de Git para facilitar la sincronización:',
-                  style: TextStyle(color: AppTheme.ink, fontSize: 14),
+                  l10n.simpleModeIntro,
+                  style: const TextStyle(color: AppTheme.ink, fontSize: 14),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Text(
-                  '• Al abrir un repositorio, se realizarán automáticamente las operaciones de búsqueda y obtención de cambios.\n'
-                  '• Al guardar cualquier archivo se creará un commit automático y se enviarán los cambios.',
-                  style: TextStyle(color: AppTheme.ink, fontSize: 13),
+                  l10n.simpleModeDetails,
+                  style: const TextStyle(color: AppTheme.ink, fontSize: 13),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
-                  '• Si hay cambios conflictivos en el repositorio remoto, las operaciones automáticas podrían fallar y requerir interacción humana..',
-                  style: TextStyle(color: AppTheme.muted, fontSize: 12),
+                  l10n.simpleModeWarning,
+                  style: const TextStyle(color: AppTheme.muted, fontSize: 12),
                 ),
               ],
             ),
@@ -229,7 +230,7 @@ class SettingsScreen extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
@@ -240,7 +241,7 @@ class SettingsScreen extends ConsumerWidget {
                 ref.read(appSettingsProvider.notifier).updateSimpleMode(true);
                 Navigator.pop(context);
               },
-              child: const Text('Activar'),
+              child: Text(l10n.enable),
             ),
           ],
         );
