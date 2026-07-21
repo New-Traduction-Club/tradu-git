@@ -131,10 +131,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       return;
     }
 
-    final authUrl =
-        'https://github.com/login/oauth/authorize?client_id=$githubClientId&redirect_uri=tradu-git://oauth&scope=repo,user';
+    final authUri = Uri.https('github.com', '/login/oauth/authorize', {
+      'client_id': githubClientId,
+      'scope': 'repo user',
+    });
     try {
-      await _browserChannel.invokeMethod('launchBrowser', {'url': authUrl});
+      await _browserChannel.invokeMethod('launchBrowser', {'url': authUri.toString()});
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
