@@ -11,7 +11,7 @@ pub fn git_clone(url: String, path: String) -> Result<String, String> {
     use git2::build::RepoBuilder;
     use git2::FetchOptions;
 
-    log_msg(&format!("Rust Backend: Cloning {} into {}", url, path));
+    log_msg(&format!("Cloning {} into {}", url, path));
 
     #[allow(unused_mut)]
     let mut callbacks = git2::RemoteCallbacks::new();
@@ -19,7 +19,7 @@ pub fn git_clone(url: String, path: String) -> Result<String, String> {
     // Attach custom certificate validation callback for Android to bypass OpenSSL trust store reads.
     #[cfg(target_os = "android")]
     callbacks.certificate_check(|_cert, _valid| {
-        log_msg("Rust Backend: certificate_check callback invoked, accepting certificate.");
+        log_msg("certificate_check callback invoked, accepting certificate.");
         Ok(git2::CertificateCheckStatus::CertificateOk)
     });
 
@@ -31,11 +31,11 @@ pub fn git_clone(url: String, path: String) -> Result<String, String> {
 
     match builder.clone(&url, Path::new(&path)) {
         Ok(_) => {
-            log_msg("Rust Backend: Clone completed successfully!");
+            log_msg("Clone completed successfully!");
             Ok("Success".to_string())
         }
         Err(e) => {
-            log_msg(&format!("Rust Backend: Clone failed: {}", e));
+            log_msg(&format!("Clone failed: {}", e));
             Err(e.to_string())
         }
     }
@@ -110,7 +110,7 @@ pub fn git_status(path: String) -> Result<String, String> {
 pub fn run_command(path: String, command_line: String) -> Result<String, String> {
     use std::process::Command;
 
-    log_msg(&format!("Rust Backend: Executing command: {} in {}", command_line, path));
+    log_msg(&format!("Executing command: {} in {}", command_line, path));
 
     let output = Command::new("sh")
         .arg("-c")
@@ -141,7 +141,7 @@ pub fn run_command(path: String, command_line: String) -> Result<String, String>
             Ok(result)
         }
         Err(e) => {
-            log_msg(&format!("Rust Backend: Failed to run command: {}", e));
+            log_msg(&format!("Failed to run command: {}", e));
             Err(format!("Failed to run command: {}", e))
         }
     }

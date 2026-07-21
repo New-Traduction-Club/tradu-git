@@ -15,7 +15,7 @@ pub fn git_add(path: String, file_path: String) -> Result<String, String> {
     let mut index = repo.index().map_err(|e| format!("Failed to get repository index: {}", e))?;
     index.add_path(Path::new(&file_path)).map_err(|e| format!("Failed to add file to index: {}", e))?;
     index.write().map_err(|e| format!("Failed to write index: {}", e))?;
-    log_msg(&format!("Rust Backend: Added {} to index", file_path));
+    log_msg(&format!("Added {} to index", file_path));
     Ok("Success".to_string())
 }
 
@@ -34,7 +34,7 @@ pub fn git_reset(path: String, file_path: String) -> Result<String, String> {
             index.write().map_err(|e| format!("Failed to write index: {}", e))?;
         }
     }
-    log_msg(&format!("Rust Backend: Reset {} in index", file_path));
+    log_msg(&format!("Reset {} in index", file_path));
     Ok("Success".to_string())
 }
 
@@ -71,7 +71,7 @@ pub fn git_commit(
         &parents,
     ).map_err(|e| format!("Failed to create commit: {}", e))?;
 
-    log_msg(&format!("Rust Backend: Created commit with message: {}", message));
+    log_msg(&format!("Created commit with message: {}", message));
     Ok("Success".to_string())
 }
 
@@ -109,7 +109,7 @@ pub fn git_push(
     let refspec = format!("refs/heads/{}:refs/heads/{}", branch_name, branch_name);
     remote.push(&[&refspec], Some(&mut push_opts)).map_err(|e| format!("Push failed: {}", e))?;
     
-    log_msg("Rust Backend: Push completed successfully.");
+    log_msg("Push completed successfully.");
     Ok("Success".to_string())
 }
 
@@ -158,7 +158,7 @@ pub fn git_pull(
         .map_err(|e| format!("Merge analysis failed: {}", e))?;
 
     if analysis.0.is_up_to_date() {
-        log_msg("Rust Backend: Pull completed. Already up to date.");
+        log_msg("Pull completed. Already up to date.");
         return Ok("Up-to-date".to_string());
     } else if analysis.0.is_fast_forward() {
         let refname = format!("refs/heads/{}", branch_name);
@@ -172,17 +172,17 @@ pub fn git_pull(
         repo.checkout_head(Some(git2::build::CheckoutBuilder::default().force()))
             .map_err(|e| format!("Checkout failed: {}", e))?;
 
-        log_msg("Rust Backend: Pull completed via Fast-Forward.");
+        log_msg("Pull completed via Fast-Forward.");
         Ok("Success-FF".to_string())
     } else if analysis.0.is_normal() {
-        log_msg("Rust Backend: Non-fast-forward merge (normal merge) required.");
+        log_msg("Non-fast-forward merge (normal merge) required.");
         
         repo.merge(&[&fetch_commit], None, None)
             .map_err(|e| format!("Merge failed: {}", e))?;
 
         let mut index = repo.index().map_err(|e| format!("Failed to get repository index: {}", e))?;
         if index.has_conflicts() {
-            log_msg("Rust Backend: Merge conflicts detected. Rolling back merge state...");
+            log_msg("Merge conflicts detected. Rolling back merge state...");
             let _ = repo.cleanup_state();
             let mut checkout_opts = git2::build::CheckoutBuilder::new();
             checkout_opts.force();
@@ -227,10 +227,10 @@ pub fn git_pull(
         repo.cleanup_state().map_err(|e| format!("Failed to clean merge state: {}", e))?;
         repo.checkout_head(None).map_err(|e| format!("Checkout after merge failed: {}", e))?;
 
-        log_msg("Rust Backend: Merge commit created and pull completed successfully.");
+        log_msg("Merge commit created and pull completed successfully.");
         Ok("Success-Merge".to_string())
     } else {
-        log_msg("Rust Backend: Unknown merge analysis result.");
+        log_msg("Unknown merge analysis result.");
         Err("Unknown merge analysis result. Cannot pull.".to_string())
     }
 }

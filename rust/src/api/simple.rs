@@ -9,6 +9,6 @@ pub fn greet(name: String) -> String {
 }
 
 pub fn setup_ssl_certificates(files_dir: String) -> Result<String, String> {
-    crate::log_msg(&format!("Rust Backend: setup_ssl_certificates compatibility stub called with files_dir: {}", files_dir));
+    crate::log_msg(&format!("setup_ssl_certificates compatibility stub called with files_dir: {}", files_dir));
     Ok("Bypassed".to_string())
 }

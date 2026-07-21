@@ -88,7 +88,7 @@ pub fn git_create_branch(path: String, branch_name: String) -> Result<String, St
     repo.checkout_head(Some(&mut checkout_opts))
         .map_err(|e| format!("Failed to checkout new branch: {}", e))?;
 
-    log_msg(&format!("Rust Backend: Created and switched to branch {}", branch_name));
+    log_msg(&format!("Created and switched to branch {}", branch_name));
     Ok("Success".to_string())
 }
 
@@ -111,7 +111,7 @@ pub fn git_checkout_branch(path: String, branch_name: String) -> Result<String, 
     repo.checkout_head(Some(&mut checkout_opts))
         .map_err(|e| format!("Failed to switch branch. You may have uncommitted changes that would be overwritten: {}", e))?;
 
-    log_msg(&format!("Rust Backend: Switched to branch {}", branch_name));
+    log_msg(&format!("Switched to branch {}", branch_name));
     Ok("Success".to_string())
 }
 

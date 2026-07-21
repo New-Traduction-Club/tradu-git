@@ -61,23 +61,23 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
   }
 
   Future<void> _saveCurrentToDraft(String? filePath) async {
-    debugPrint('[Dart] _saveCurrentToDraft starting for $filePath');
+    debugPrint('_saveCurrentToDraft starting for $filePath');
     if (filePath == null) return;
     final openFiles = ref.read(openFilesProvider);
     if (!openFiles.contains(filePath)) {
-      debugPrint('[Dart] _saveCurrentToDraft skipped: file tab is closed');
+      debugPrint('_saveCurrentToDraft skipped: file tab is closed');
       return;
     }
     try {
       final Map<dynamic, dynamic>? stateMap = await _channel.invokeMethod('getEditorState');
-      debugPrint('[Dart] _saveCurrentToDraft got getEditorState stateMap: $stateMap');
+      debugPrint('_saveCurrentToDraft got getEditorState stateMap: $stateMap');
       if (stateMap != null) {
         final scrollX = stateMap['scrollX'] as int? ?? 0;
         final scrollY = stateMap['scrollY'] as int? ?? 0;
         final cursorLine = stateMap['cursorLine'] as int? ?? 0;
         final cursorColumn = stateMap['cursorColumn'] as int? ?? 0;
 
-        debugPrint('[Dart] _saveCurrentToDraft saving state in provider: scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn');
+        debugPrint('_saveCurrentToDraft saving state in provider: scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn');
         ref.read(fileEditorStatesProvider.notifier).saveState(
           filePath,
           EditorStateInfo(
@@ -115,7 +115,7 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
 
   Future<void> _loadActiveFile() async {
     final activeFile = ref.read(activeFilePathProvider);
-    debugPrint('[Dart] _loadActiveFile starting for $activeFile');
+    debugPrint('_loadActiveFile starting for $activeFile');
     if (activeFile != null) {
       try {
         final draftFile = _getDraftFile(activeFile);
@@ -134,7 +134,7 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
         final cursorLine = stateInfo?.cursorLine ?? 0;
         final cursorColumn = stateInfo?.cursorColumn ?? 0;
 
-        debugPrint('[Dart] _loadActiveFile retrieved state from provider: scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn');
+        debugPrint('_loadActiveFile retrieved state from provider: scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn');
         final wordWrap = ref.read(appSettingsProvider).wordWrap;
         final themeName = ref.read(appSettingsProvider).theme;
         await _channel.invokeMethod('setWrap', {'wrap': wordWrap});
@@ -160,7 +160,7 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
   }
 
   void _onFlutterFocusChanged() {
-    debugPrint('[Dart] Flutter focus changed: hasFocus=${_focusNode.hasFocus}');
+    debugPrint('Flutter focus changed: hasFocus=${_focusNode.hasFocus}');
     if (_isFocusingFromNative) return;
     if (_focusNode.hasFocus) {
       _channel.invokeMethod('requestFocus');
@@ -170,7 +170,7 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
   }
 
   Future<void> _handleMethodCall(MethodCall call) async {
-    debugPrint('[Dart] Received method call: ${call.method}');
+    debugPrint('Received method call: ${call.method}');
     switch (call.method) {
       case 'onFocusGained':
         if (!_focusNode.hasFocus) {
@@ -192,7 +192,7 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
   @override
   Widget build(BuildContext context) {
     ref.listen<String?>(activeFilePathProvider, (previous, next) {
-      debugPrint('[Dart] activeFilePathProvider listener triggered: previous=$previous next=$next _loadedFilePath=$_loadedFilePath');
+      debugPrint('activeFilePathProvider listener triggered: previous=$previous next=$next _loadedFilePath=$_loadedFilePath');
       if (next != _loadedFilePath) {
         _saveCurrentToDraft(previous).then((_) {
           _loadActiveFile();
@@ -201,12 +201,12 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
     });
 
     ref.listen<bool>(appSettingsProvider.select((s) => s.wordWrap), (previous, next) {
-      debugPrint('[Dart] Live word wrap setting changed to: $next');
+      debugPrint('Live word wrap setting changed to: $next');
       _channel.invokeMethod('setWrap', {'wrap': next});
     });
 
     ref.listen<String>(appSettingsProvider.select((s) => s.theme), (previous, next) {
-      debugPrint('[Dart] Live theme setting changed to: $next');
+      debugPrint('Live theme setting changed to: $next');
       _channel.invokeMethod('setTheme', {'themeName': next});
     });
 

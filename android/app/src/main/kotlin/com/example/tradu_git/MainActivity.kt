@@ -4,11 +4,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.util.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     private val STORAGE_CHANNEL = "com.tdclub.tradu_git/storage"
     private val BROWSER_CHANNEL = "com.tdclub.tradu_git/browser"
     private val OAUTH_CHANNEL = "com.tdclub.tradu_git/oauth"
@@ -32,7 +37,7 @@ class MainActivity : FlutterActivity() {
         if (Intent.ACTION_VIEW == action && data != null) {
             val url = data.toString()
             if (url.startsWith("tradu-git://oauth")) {
-                println("[MainActivity] Intercepted OAuth Redirect: $url")
+                Log.d(TAG, "Intercepted OAuth Redirect: $url")
                 val channel = oauthChannel
                 if (channel != null) {
                     channel.invokeMethod("onOAuthCallback", url)
@@ -63,7 +68,7 @@ class MainActivity : FlutterActivity() {
                         context.startActivity(intent)
                         result.success(true)
                     } catch (e: Exception) {
-                        println("[MainActivity] Error opening documents provider: ${e.message}")
+                        Log.e(TAG, "Error opening documents provider: ${e.message}", e)
                         result.error("OPEN_FAILED", e.message, null)
                     }
                 }

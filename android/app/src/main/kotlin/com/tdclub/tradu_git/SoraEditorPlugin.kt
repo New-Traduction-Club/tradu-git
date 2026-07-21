@@ -3,6 +3,7 @@ package com.tdclub.tradu_git
 import android.content.Context
 import android.graphics.Color
 import android.view.View
+import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
@@ -17,6 +18,10 @@ import io.github.rosemoe.sora.widget.schemes.SchemeDarcula
 import io.github.rosemoe.sora.widget.schemes.EditorColorScheme
 
 class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
+    companion object {
+        private const val TAG = "SoraEditorPlugin"
+    }
+
     private var channel: MethodChannel? = null
     private var editor: CodeEditor? = null
 
@@ -45,7 +50,7 @@ class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
                 val cursorLine = call.argument<Int>("cursorLine") ?: 0
                 val cursorColumn = call.argument<Int>("cursorColumn") ?: 0
 
-                println("[SoraEditorPlugin] setText text.length=${text.length} scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn")
+                Log.d(TAG, "setText text.length=${text.length} scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn")
                 current?.setText(text)
 
                 val applyState = {
@@ -56,7 +61,7 @@ class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
                         current?.getScroller()?.setEditorOffsets()
                         current?.invalidate()
                     } catch (e: Exception) {
-                        println("[SoraEditorPlugin] applyState error: ${e.message}")
+                        Log.e(TAG, "applyState error: ${e.message}", e)
                     }
                 }
 
@@ -86,7 +91,7 @@ class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
                     val scrollY = current.offsetY
                     val cursorLine = cursor.leftLine
                     val cursorColumn = cursor.leftColumn
-                    println("[SoraEditorPlugin] getEditorState: scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn")
+                    Log.d(TAG, "getEditorState: scrollX=$scrollX scrollY=$scrollY cursorLine=$cursorLine cursorColumn=$cursorColumn")
                     val stateMap = mapOf(
                         "scrollX" to scrollX,
                         "scrollY" to scrollY,
@@ -95,7 +100,7 @@ class SoraEditorPlugin : FlutterPlugin, MethodCallHandler {
                     )
                     result.success(stateMap)
                 } else {
-                    println("[SoraEditorPlugin] getEditorState: current editor is null")
+                    Log.d(TAG, "getEditorState: current editor is null")
                     result.success(null)
                 }
             }
