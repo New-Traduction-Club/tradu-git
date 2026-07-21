@@ -22,7 +22,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Load repos on start
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadRepos();
     });
@@ -62,7 +61,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         }
       }
 
-      // Sort alphabetically by folder name
       gitRepos.sort((a, b) {
         final nameA = a.path.split('/').last.toLowerCase();
         final nameB = b.path.split('/').last.toLowerCase();
@@ -381,7 +379,6 @@ class _CloneSheetState extends State<_CloneSheet> {
     final url = _urlController.text.trim();
     if (url.isEmpty) return;
     
-    // Auto-generate repository folder name from URL
     try {
       final uri = Uri.parse(url);
       var lastSegment = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : '';
@@ -417,7 +414,6 @@ class _CloneSheetState extends State<_CloneSheet> {
     final targetPath = '${widget.workspacePath}/$name';
 
     try {
-      // Check if folder already exists
       if (Directory(targetPath).existsSync()) {
         throw Exception("La carpeta '$name' ya existe.");
       }
@@ -606,7 +602,6 @@ class _GithubReposCloneSheetState extends ConsumerState<_GithubReposCloneSheet> 
   bool _loading = false;
   String? _error;
   
-  // Confirmation state
   GithubRepositoryInfo? _selectedRepo;
   final _nameController = TextEditingController();
   bool _cloning = false;

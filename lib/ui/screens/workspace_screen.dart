@@ -363,7 +363,7 @@ class _FileTreeNode extends ConsumerWidget {
         onTap: () {
           ref.read(activeFilePathProvider.notifier).setPath(entity.path);
           ref.read(openFilesProvider.notifier).openFile(entity.path);
-          Navigator.of(context).pop(); // Close explorer drawer
+          Navigator.of(context).pop();
         },
         child: Padding(
           padding: EdgeInsets.only(
@@ -1993,7 +1993,6 @@ class _BottomToolbar extends ConsumerWidget {
                           final String text = await channel.invokeMethod('getText') ?? '';
                           await File(activeFile).writeAsString(text);
 
-                          // Delete the draft cache file if it exists
                           final reposPath = ref.read(internalReposPathProvider);
                           if (reposPath != null) {
                             final parentPath = Directory(reposPath).parent.path;
@@ -2004,10 +2003,8 @@ class _BottomToolbar extends ConsumerWidget {
                             }
                           }
 
-                          // Clear the dirty flag
                           ref.read(dirtyFilesProvider.notifier).setDirty(activeFile, false);
 
-                          // Refresh git status
                           ref.read(gitStatusProvider.notifier).refresh();
 
                           ScaffoldMessenger.of(context).showSnackBar(

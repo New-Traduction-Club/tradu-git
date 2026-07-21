@@ -69,7 +69,6 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
       return;
     }
     try {
-      // Save scroll and cursor state
       final Map<dynamic, dynamic>? stateMap = await _channel.invokeMethod('getEditorState');
       debugPrint('[Dart] _saveCurrentToDraft got getEditorState stateMap: $stateMap');
       if (stateMap != null) {
@@ -90,7 +89,6 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
         );
       }
 
-      // Save draft content
       final String? text = await _channel.invokeMethod('getText');
       if (text == null) return;
 
@@ -129,7 +127,6 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
           content = await File(activeFile).readAsString();
         }
 
-        // Retrieve scroll and cursor state
         final editorStates = ref.read(fileEditorStatesProvider);
         final stateInfo = editorStates[activeFile];
         final scrollX = stateInfo?.scrollX ?? 0;
@@ -194,7 +191,6 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
 
   @override
   Widget build(BuildContext context) {
-    // Listen to changes to activeFilePathProvider to reload file dynamically
     ref.listen<String?>(activeFilePathProvider, (previous, next) {
       debugPrint('[Dart] activeFilePathProvider listener triggered: previous=$previous next=$next _loadedFilePath=$_loadedFilePath');
       if (next != _loadedFilePath) {
@@ -204,13 +200,11 @@ class _SoraEditorViewState extends ConsumerState<SoraEditorView> with WidgetsBin
       }
     });
 
-    // Listen to word wrap setting changes to apply them live
     ref.listen<bool>(appSettingsProvider.select((s) => s.wordWrap), (previous, next) {
       debugPrint('[Dart] Live word wrap setting changed to: $next');
       _channel.invokeMethod('setWrap', {'wrap': next});
     });
 
-    // Listen to theme setting changes to apply them live
     ref.listen<String>(appSettingsProvider.select((s) => s.theme), (previous, next) {
       debugPrint('[Dart] Live theme setting changed to: $next');
       _channel.invokeMethod('setTheme', {'themeName': next});

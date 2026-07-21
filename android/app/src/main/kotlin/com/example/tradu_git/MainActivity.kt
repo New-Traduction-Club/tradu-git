@@ -47,7 +47,6 @@ class MainActivity : FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         flutterEngine.plugins.add(SoraEditorPlugin())
 
-        // Storage channel
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, STORAGE_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "getInternalStoragePath" -> {
@@ -72,7 +71,6 @@ class MainActivity : FlutterActivity() {
             }
         }
 
-        // Browser launcher channel
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BROWSER_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "launchBrowser" -> {
@@ -95,7 +93,6 @@ class MainActivity : FlutterActivity() {
             }
         }
 
-        // OAuth deep link listener channel
         oauthChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, OAUTH_CHANNEL).apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {
